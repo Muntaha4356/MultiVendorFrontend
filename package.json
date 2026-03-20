@@ -17,7 +17,7 @@
     "@mui/x-data-grid": "^8.11.2",
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.12",
-    "axios": "^1.11.0",
+    "axios": "^1.13.6",
     "country-state-city": "^3.2.1",
     "icons": "^1.0.0",
     "lottie": "^0.0.1",
