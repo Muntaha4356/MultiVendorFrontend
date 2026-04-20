@@ -22,7 +22,7 @@ const AllCoupons = () => {
     const [value, setValue] = useState(null);
     const [minAmount, setMinAmount] = useState(null);
     const [maxAmount, setMaxAmount] = useState(null);
-    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [coupon, setCoupon] = useState([]);
     const { products } = useSelector((state) => state.products);
@@ -190,15 +190,18 @@ const AllCoupons = () => {
                                                 <label className='pb-2'>
                                                     Selected Product <span className='text-red-500'>*</span>
                                                 </label>
-                                                <select name="" id=""
-                                                    className=' w-full mt-2 border h-[35px] rounded-[5px]'
+                                                <select name="" id="" multiple
+                                                    className=' w-full mt-2 border h-[100px] rounded-[5px]'
                                                     value={selectedProduct}
-                                                    onChange={(e) => setSelectedProduct(e.target.value)} >
-                                                    <option value="">Choose a selected Product</option>
+                                                    onChange={(e) => {
+                                                        const values = Array.from(e.target.selectedOptions, option => option.value);
+                                                        setSelectedProduct(values);
+                                                    }} >
+                                                    <option value="">Choose selected Products</option>
                                                     {
                                                         products && products.map((i) => (
-                                                            <option value={i.name}
-                                                                key={i.name} >{i.name}</option>
+                                                            <option value={i._id}
+                                                                key={i._id} >{i.name}</option>
                                                         ))
                                                     }
                                                 </select>

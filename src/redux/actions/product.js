@@ -13,12 +13,13 @@ export const createProduct = (newForm) => async (dispatch) => {
 
         const { data } = await axios.post(`${server}/product/create-product`, newForm, config);
 
-        dispatch({ type: "productCreateSuccess", payload: data.product });
+        dispatch({ type: "productCreateSuccess", payload: data?.product });
 
     }
 
     catch (error) {
-        dispatch({ type: "productCreateFail", payload: error.response.data.message });
+        const message = error.response?.data?.message || error.message || "Something went wrong";
+        dispatch({ type: "productCreateFail", payload: message });
     }
 };
 
@@ -27,10 +28,11 @@ export const getAllProductsShop = (id) => async (dispatch) => {
     try {
         dispatch({ type: "getAllProductsShopRequest" });
         const { data } = await axios.get(`${server}/product/get-all-products-shop/${id}`);
-        dispatch({ type: "getAllProductsShopSuccess", payload: data.products });
+        dispatch({ type: "getAllProductsShopSuccess", payload: data?.products });
     }
     catch (error) {
-        dispatch({ type: "getAllProductsShopFailed", payload: error.response.data.message });
+        const message = error.response?.data?.message || error.message || "Something went wrong";
+        dispatch({ type: "getAllProductsShopFailed", payload: message });
     }
 };
 
@@ -45,13 +47,14 @@ export const deleteProduct = (id) => async (dispatch) => {
         });
         dispatch({ 
             type: "deleteProductSuccess", 
-            payload: data.message 
+            payload: data?.message 
         });
     }
     catch (error) {
+            const message = error.response?.data?.message || error.message || "Something went wrong";
         dispatch({ 
             type: "deleteProductFailed", 
-            payload: error.response.data.message 
+            payload: message 
         });
     }
 };
@@ -69,13 +72,13 @@ export const getAllProducts = () => async (dispatch) => {
         const { data } = await axios.get(`${server}/product/get-all-products`);
         dispatch({ 
             type: "getAllProductsSuccess", 
-            payload: data.products 
+            payload: data?.products 
         });
     }
     catch (error) {
         dispatch({
             type: "getAllProductsFailed", 
-            payload: error.response.data.message 
+            payload: error?.response?.data?.message 
         });
     }
 };

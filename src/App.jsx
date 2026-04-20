@@ -1,9 +1,12 @@
 import { Route, Routes } from "react-router-dom";
 // 3:06:42
 import "./App.css";
+import { server } from "./server.js";
 import Login from "./pages/Login";
+import { useState } from "react";
 import ActivationPage from "./pages/ActivationPage";
 import { Toaster } from "react-hot-toast";
+import axios from "axios";
 import { useEffect } from "react";
 import TestRedux from "./pages/TestRedux";
 import Store from "./redux/store.js";
@@ -35,17 +38,26 @@ import ShopCreateEvent from "./pages/Shop/ShopCreateEvent.jsx";
 import ShopAllCoupons from "./pages/Shop/ShopAllCoupons.jsx";
 import ShopPreviewPage from "./components/Shop/ShopPreviewPage.jsx";
 import ProductDetailsPage from "./pages/ProductDetailsPage.jsx";
+import PaymentPage from "./pages/PaymentPage.jsx";
 import { getAllEvents } from "./redux/actions/event.js";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 function App() {
   const navigate = useNavigate();
   const { loading, isAuthenticated } = useSelector((state) => state.user);
   const { isLoading, isSeller, seller } = useSelector((state) => state.seller);
+  const [stripeApikey, setStripeApiKey] = useState("");
+  async function getStripeApikey() {
+    const { data } = await axios.get(`${server}/payment/stripeapikey`);
+    setStripeApiKey(data.stripeApikey);
+  }
 
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
+    getStripeApikey();
 
     if (isSeller) {
       navigate(`/shop/${seller._id}`)
@@ -54,6 +66,20 @@ function App() {
   return (
     loading || isLoading ? null : (
       <>
+      {stripeApikey && (
+        <Elements stripe={loadStripe(stripeApikey)}>
+          <Routes>
+            <Route
+              path="/payment"
+              element={
+                <ProtectedRoute>
+                  <PaymentPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Elements>
+      )}
         <Toaster />
         <div className="dark:bg-gradient-to-b from-[#242124] to-[#000000]">
           <div className="flex h-screen w-screen">
@@ -89,6 +115,7 @@ function App() {
                   <CheckoutPage />
                 </ProtectedRoute>
               } />
+              \
               <Route path="/shop-create" element={<ShopCreate />} />
               <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />
               <Route path="/shop/:id" element={
