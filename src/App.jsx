@@ -42,14 +42,24 @@ import PaymentPage from "./pages/PaymentPage.jsx";
 import { getAllEvents } from "./redux/actions/event.js";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import Payment from "./components/Payment/Payment.jsx";
+import Checkout from "./components/Checkout/Checkout.jsx";
+import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
 function App() {
   const navigate = useNavigate();
   const { loading, isAuthenticated } = useSelector((state) => state.user);
   const { isLoading, isSeller, seller } = useSelector((state) => state.seller);
   const [stripeApikey, setStripeApiKey] = useState("");
+  const [stripeLoading, setStripeLoading] = useState(true);
   async function getStripeApikey() {
-    const { data } = await axios.get(`${server}/payment/stripeapikey`);
-    setStripeApiKey(data.stripeApikey);
+    try {
+      const { data } = await axios.get(`${server}/payment/stripeapikey`);
+      setStripeApiKey(data.stripeApiKey);
+    } catch (error) {
+      console.error("Failed to load Stripe API key:", error);
+    } finally {
+      setStripeLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -57,7 +67,9 @@ function App() {
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
+    console.log("wese yk its meow", stripeApikey)
     getStripeApikey();
+    
 
     if (isSeller) {
       navigate(`/shop/${seller._id}`)
@@ -66,24 +78,28 @@ function App() {
   return (
     loading || isLoading ? null : (
       <>
-      {stripeApikey && (
-        <Elements stripe={loadStripe(stripeApikey)}>
-          <Routes>
-            <Route
-              path="/payment"
-              element={
-                <ProtectedRoute>
-                  <PaymentPage />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </Elements>
-      )}
+      
         <Toaster />
         <div className="dark:bg-gradient-to-b from-[#242124] to-[#000000]">
           <div className="flex h-screen w-screen">
             <Routes>
+              <Route
+                path="/payment"
+                element={
+                  stripeLoading ? (
+                    <Loader />
+                  ) : stripeApikey ? (
+                    console.log("kikiki", stripeApikey),
+                    <Elements stripe={loadStripe(stripeApikey)}>
+                      <ProtectedRoute isAuthenticated={isAuthenticated}>
+                        <PaymentPage />
+                      </ProtectedRoute>
+                    </Elements>
+                  ) : (
+                    <div>Failed to load payment system. Please try again later.</div>
+                  )
+                }
+              />
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<Login />} />
               <Route
@@ -117,6 +133,7 @@ function App() {
               } />
               \
               <Route path="/shop-create" element={<ShopCreate />} />
+              <Route path="/order/success" element={<OrderSuccessPage />} />
               <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />
               <Route path="/shop/:id" element={
                 <SellerProtectedRoute

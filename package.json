@@ -18,7 +18,7 @@
     "@paypal/react-paypal-js": "^9.1.1",
     "@reduxjs/toolkit": "^2.8.2",
     "@stripe/react-stripe-js": "^6.2.0",
-    "@stripe/stripe-js": "^9.2.0",
+    "@stripe/stripe-js": "^9.3.0",
     "@tailwindcss/vite": "^4.1.12",
     "axios": "^1.13.6",
     "country-state-city": "^3.2.1",

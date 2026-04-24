@@ -1,13 +1,10 @@
-import React, {useState} from 'react'
-import { useNavigate } from 'react-router-dom'
-import styles from '../../styles/styles'
-import useEffect from 'react'
+import React, { useState, useEffect } from 'react'
 import {
-    CardNumberElement,
-    CardCvcElement,
-    CardExpiryElement,
-    useStripe,
-    useElements
+  CardNumberElement,
+  CardCvcElement,
+  CardExpiryElement,
+  useStripe,
+  useElements
 } from '@stripe/react-stripe-js'
 import { toast } from 'react-toastify'
 import axios from 'axios'
@@ -15,6 +12,8 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useSelector } from 'react-redux';
 import { server } from '../../server'
 import { RxCross1 } from 'react-icons/rx'
+import { useNavigate } from 'react-router-dom';
+import styles from '../../styles/styles';
 
 const Payment = () => {
   const [orderData, setOrderData] = useState([]);
@@ -27,7 +26,7 @@ const Payment = () => {
     const orderData = JSON.parse(localStorage.getItem("latestOrder"));
     setOrderData(orderData);
   }, []);
-  // Bill Generator: it tells paypal what the order is and how much to charge
+  // Bill Generator: it tells "paypal" what the order is and how much to charge
   const createOrder = (data, actions) => {
     return actions.order // tells paypal to start the order creation process
       .create({
@@ -159,15 +158,15 @@ const Payment = () => {
     };
 
     await axios
-    .post(`${server}/order/create-order`, order, config)
-    .then((res) => {
-      setOpen(false);
-      navigate("/order/success");
-      toast.success("Order successful!");
-      localStorage.setItem("cartItems", JSON.stringify([]));
-      localStorage.setItem("latestOrder", JSON.stringify([]));
-      window.location.reload();
-    });
+      .post(`${server}/order/create-order`, order, config)
+      .then((res) => {
+        setOpen(false);
+        navigate("/order/success");
+        toast.success("Order successful!");
+        localStorage.setItem("cartItems", JSON.stringify([]));
+        localStorage.setItem("latestOrder", JSON.stringify([]));
+        window.location.reload();
+      });
   };
 
   return (
@@ -233,6 +232,7 @@ const PaymentInfo = ({
                     placeholder={user && user.name}
                     className={`${styles.input} !w-[95%] text-[#444]`}
                     value={user && user.name}
+                    
                   />
                 </div>
                 <div className="w-[50%]">
@@ -308,6 +308,7 @@ const PaymentInfo = ({
               <input
                 type="submit"
                 value="Submit"
+                
                 className={`${styles.button} !bg-[#f63b60] text-[#fff] h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
               />
             </form>
@@ -351,18 +352,18 @@ const PaymentInfo = ({
                       onClick={() => setOpen(false)}
                     />
                   </div>
-                    <PayPalScriptProvider
-                      options={{
-                        "client-id":
-                          "Aczac4Ry9_QA1t4c7TKH9UusH3RTe6onyICPoCToHG10kjlNdI-qwobbW9JAHzaRQwFMn2-k660853jn",
-                      }}
-                    >
-                      <PayPalButtons
-                        style={{ layout: "vertical" }}
-                        onApprove={onApprove}
-                        createOrder={createOrder}
-                      />
-                    </PayPalScriptProvider>
+                  <PayPalScriptProvider
+                    options={{
+                      "client-id":
+                        "Aczac4Ry9_QA1t4c7TKH9UusH3RTe6onyICPoCToHG10kjlNdI-qwobbW9JAHzaRQwFMn2-k660853jn",
+                    }}
+                  >
+                    <PayPalButtons
+                      style={{ layout: "vertical" }}
+                      onApprove={onApprove}
+                      createOrder={createOrder}
+                    />
+                  </PayPalScriptProvider>
                 </div>
               </div>
             )}
@@ -421,7 +422,7 @@ const CartData = ({ orderData }) => {
       <br />
       <div className="flex justify-between border-b pb-3">
         <h3 className="text-[16px] font-[400] text-[#000000a4]">Discount:</h3>
-        <h5 className="text-[18px] font-[600]">{orderData?.discountPrice? "$" + orderData.discountPrice : "-"}</h5>
+        <h5 className="text-[18px] font-[600]">{orderData?.discountPrice ? "$" + orderData.discountPrice : "-"}</h5>
       </div>
       <h5 className="text-[18px] font-[600] text-end pt-3">
         ${orderData?.totalPrice}
