@@ -45,6 +45,10 @@ import { loadStripe } from "@stripe/stripe-js";
 import Payment from "./components/Payment/Payment.jsx";
 import Checkout from "./components/Checkout/Checkout.jsx";
 import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
+import TrackOrderPage from "./pages/TrackOrderPage.jsx";
+import OrderDetailsPage from "./pages/OrderDetailsPage.jsx";
+import ShopAllOrders from "./pages/Shop/ShopAllOrders.jsx";
+import ShopOrderDetails from "./pages/Shop/ShopOrderDetails.jsx";
 function App() {
   const navigate = useNavigate();
   const { loading, isAuthenticated } = useSelector((state) => state.user);
@@ -67,9 +71,8 @@ function App() {
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
-    console.log("wese yk its meow", stripeApikey)
-    getStripeApikey();
-    
+    // getStripeApikey();
+
 
     if (isSeller) {
       navigate(`/shop/${seller._id}`)
@@ -78,7 +81,7 @@ function App() {
   return (
     loading || isLoading ? null : (
       <>
-      
+
         <Toaster />
         <div className="dark:bg-gradient-to-b from-[#242124] to-[#000000]">
           <div className="flex h-screen w-screen">
@@ -131,7 +134,7 @@ function App() {
                   <CheckoutPage />
                 </ProtectedRoute>
               } />
-              \
+
               <Route path="/shop-create" element={<ShopCreate />} />
               <Route path="/order/success" element={<OrderSuccessPage />} />
               <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />
@@ -149,7 +152,35 @@ function App() {
                   <ShopAllCoupons />
                 </SellerProtectedRoute>
               } />
+              <Route
+                path="/user/order/:id"
+                element={
+                  <ProtectedRoute>
+                    <OrderDetailsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard/orders"
+                element= {
+                  <SellerProtectedRoute isSeller={isSeller}>
+                      <ShopAllOrders />
+                  </SellerProtectedRoute>
+                    
+                }
+              />
               {/* <Route path="/loading" element= {<Loader/>}/> */}
+              <Route path="/user/track/user/:id" element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <TrackOrderPage />
+                </ProtectedRoute>
+              } />
+              {/* Shop Order detail page */}
+              <Route path="/order/:id" element={
+                <SellerProtectedRoute isSeller={isSeller}>
+                  <ShopOrderDetails/>
+                </SellerProtectedRoute>
+              } />
             </Routes>
           </div>
         </div>

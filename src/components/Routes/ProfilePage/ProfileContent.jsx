@@ -13,6 +13,7 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { Country, State } from "country-state-city"
 import { updateUserInformation, deleteUserAddress, loadUser, updateUserAddress } from "../../../redux/actions/user";
+import { getAllOrdersOfUser } from "../../../redux/actions/order";
 const ProfileContent = ({ active, setActive }) => {
   const { user, error, successMessage } = useSelector((state) => state.user);
   const [name, setName] = useState(user?.name || "");
@@ -31,7 +32,6 @@ const ProfileContent = ({ active, setActive }) => {
       dispatch({ type: "clearMessages" })
     }
   }, [error, successMessage])
-  console.log(user);
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(updateUserInformation(name, email, phoneNum, password));
@@ -212,18 +212,15 @@ const ProfileContent = ({ active, setActive }) => {
 export default ProfileContent;
 
 const AllOrders = () => {
-  const orders = [
-    {
-      _id: "6566654ggfrrt666",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-  ];
+  const { orders } = useSelector((state) => state.orders);
+  const {user} = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (user && user._id) {
+      dispatch(getAllOrdersOfUser(user._id));
+    }
+  }, [dispatch, user, user?._id])
+  
   // Define columns
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -279,7 +276,7 @@ const AllOrders = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
+        itemsQty: item?.orderItems?.length,
         total: "US$ " + item.totalPrice,
         status: item.orderStatus,
       });
@@ -365,7 +362,7 @@ const AllRefundOrders = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
+        itemsQty: item?.orderItems?.length,
         total: "US$ " + item.totalPrice,
         status: item.orderStatus,
       });
@@ -452,7 +449,7 @@ const TrackOrders = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
+        itemsQty: item?.orderItems?.length,
         total: "US$ " + item.totalPrice,
         status: item.orderStatus,
       });
