@@ -10,6 +10,7 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { useParams } from "react-router-dom";
+import Ratings from "./Ratings";
 import { productData } from "../../static/data"
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
@@ -31,6 +32,21 @@ const ProductDetails = ({ data }) => {
   const { allProducts } = useSelector((state) => state.products);
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
+  const totalReviewsLength =
+    products &&
+    products.reduce((acc, product) => acc + product.reviews.length, 0);
+  const totalRatings =
+    products &&
+    products.reduce(
+      (acc, product) =>
+        acc + product.reviews.reduce((sum, review) => sum + review.rating, 0),
+      0
+    );
+
+  const avg = totalRatings / totalReviewsLength || 0;
+
+  const averageRating = avg.toFixed(2);
+
   const addToCartHandler = (id) => {
     const isItemExists = cart && cart.find((i) => i._id === id);
     if (isItemExists) {
@@ -47,7 +63,9 @@ const ProductDetails = ({ data }) => {
   };
 
   useEffect(() => {
-    dispatch(getAllProductsShop(id));
+    if (data?.shop?._id) {
+      dispatch(getAllProductsShop(data.shop._id));
+    }
     if (wishlist && wishlist.find((i) => i._id === data?._id)) {
       setClick(true)
     } else {
@@ -88,7 +106,6 @@ const ProductDetails = ({ data }) => {
     setClick(!click);
     dispatch(addToWishlist(data))
   }
-
 
 
   const handleMessageSubmit = () => {
@@ -201,15 +218,15 @@ const ProductDetails = ({ data }) => {
                 </div>
                 <Link to={`/shop/preview/${data?.shop?._id}`}>
                   <div className="flex items-center pt-8 ">
-                      <img
-                        src={`${backend_url}${data?.shop?.avatar}`}
-                        alt=""
-                        className="w-[50px] h-[50px] rounded-full mr-2"
-                      />
+                    <img
+                      src={`${backend_url}${data?.shop?.avatar}`}
+                      alt=""
+                      className="w-[50px] h-[50px] rounded-full mr-2"
+                    />
                     <div className="pr-8">
                       <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
                       <h5 className="pb-3 text-[15px]">
-                        {4 / 5} Rating
+                        {averageRating}/5 Rating
                       </h5>
                     </div>
                     <div
@@ -225,7 +242,7 @@ const ProductDetails = ({ data }) => {
               </div>
             </div>
           </div>
-          <ProductDetailInfo data={data} products={allProducts} />
+          <ProductDetailInfo data={data} products={allProducts} totalReviewsLength={totalReviewsLength} averageRating={averageRating} />
           <br />
           <br />
         </div>
@@ -236,8 +253,10 @@ const ProductDetails = ({ data }) => {
 
 export default ProductDetails;
 
-const ProductDetailInfo = ({ data, products }) => {
+const ProductDetailInfo = ({ data, products, totalReviewsLength, averageRating }) => {
   const [active, setActive] = useState(1);
+
+
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded ">
       <div className="w-full flex justify-between border-b pt-10 pb-2">
@@ -305,7 +324,7 @@ const ProductDetailInfo = ({ data, products }) => {
 
           <div className="w-full flex justify-center">
             {data && data.reviews.length === 0 && (
-              <h5>No Reviews have for this product!</h5>
+              <h5>No Reviews for this product!</h5>
             )}
           </div>
         </div>
@@ -326,7 +345,7 @@ const ProductDetailInfo = ({ data, products }) => {
                   <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
                 </Link>
                 <h5 className="pb-2 text-[15px] ">
-                  ({data.shop.ratings}) Ratings
+                  ({averageRating}/5) Ratings
                 </h5>
               </div>
 
@@ -344,7 +363,7 @@ const ProductDetailInfo = ({ data, products }) => {
                 TotaL Products <span className="font-[500]"> {products && products.length} </span>
               </h5>
               <h5 className="font-[300] pt-3">
-                TotaL Reviews <span className="font-[500]"> {data.reviews.length} </span>
+                TotaL Reviews <span className="font-[500]"> {totalReviewsLength} </span>
               </h5>
               <Link to={"/"}>
                 <div className={`${styles.button} !rounded-[4px] !h-[39px] mt-3`}>
