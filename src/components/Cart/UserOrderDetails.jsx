@@ -15,8 +15,8 @@ import { toast } from "react-toastify";
 const UserOrderDetails = () => {
     const { orders } = useSelector((state) => state.orders);
     const { user } = useSelector((state) => state.user);
-    const { dispatch } = useDispatch();
-    const [open, setOpen] = useState(false);
+    const dispatch = useDispatch();
+    const [open, setOpen] = useState(true);
     const [comment, setComment] = useState("");
     const [selectedItem, setSelectedItem] = useState(null);
     const [rating, setRating] = useState(1);
@@ -33,6 +33,7 @@ const UserOrderDetails = () => {
 
     const reviewHandler = async (e) => {
         await axios
+        
             .put(
                 `${server}/product/create-new-review`,
                 {
@@ -40,7 +41,7 @@ const UserOrderDetails = () => {
                     rating,
                     comment,
                     productId: selectedItem?._id,
-                    orderId: id,
+                    orderId: id, 
                 },
                 { withCredentials: true }
             )

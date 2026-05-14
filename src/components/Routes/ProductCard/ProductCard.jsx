@@ -23,6 +23,7 @@ const ProductCard = ({ data }) => {
   const { cart } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
   const product_id = data._id;
+  console.log(data, "data in product card");
 
   useEffect(() => {
     if (wishlist && wishlist.find((i) => i._id === data._id)) {

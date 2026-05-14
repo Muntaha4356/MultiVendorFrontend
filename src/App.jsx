@@ -71,7 +71,7 @@ function App() {
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
-    // getStripeApikey();
+    getStripeApikey();
 
 
     if (isSeller) {
@@ -152,14 +152,7 @@ function App() {
                   <ShopAllCoupons />
                 </SellerProtectedRoute>
               } />
-              <Route
-                path="/user/order/:id"
-                element={
-                  <ProtectedRoute>
-                    <OrderDetailsPage />
-                  </ProtectedRoute>
-                }
-              />
+              
               <Route
                 path="/dashboard/orders"
                 element= {
@@ -181,6 +174,15 @@ function App() {
                   <ShopOrderDetails/>
                 </SellerProtectedRoute>
               } />
+
+              <Route
+                path="/user/order/:id"
+                element={
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                    <OrderDetailsPage />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
           </div>
         </div>

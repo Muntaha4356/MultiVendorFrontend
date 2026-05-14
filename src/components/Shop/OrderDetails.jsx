@@ -58,7 +58,7 @@ const OrderDetails = () => {
           <BsFillBagFill size={30} color="crimson" />
           <h1 className="pl-2 text-[25px]">Order Details</h1>
         </div>
-        <Link to="/dashboard-orders">
+        <Link to="/dashboard/orders">
           <div
             className={`${styles.button} !bg-[#fce1e6] !rounded-[4px] text-[#e94560] font-[600] !h-[45px] text-[18px]`}
           >
