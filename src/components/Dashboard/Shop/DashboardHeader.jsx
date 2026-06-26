@@ -52,8 +52,14 @@ const DashboardHeader = ({seller}) => {
             />
           </Link>
           <Link to={`/shop/${seller._id}`}>
-            <img src={`${backend_url}${seller.avatar.public_id}`} alt=""
-            className='w-[50px] h-[50px] rounded-full object-cover' />
+            <img
+              src={
+                seller?.avatar?.url ||
+                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+              }
+              alt="Seller avatar"
+              className='w-[50px] h-[50px] rounded-full object-cover'
+            />
           </Link>
         </div>
       </div>

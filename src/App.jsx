@@ -49,6 +49,8 @@ import TrackOrderPage from "./pages/TrackOrderPage.jsx";
 import OrderDetailsPage from "./pages/OrderDetailsPage.jsx";
 import ShopAllOrders from "./pages/Shop/ShopAllOrders.jsx";
 import ShopOrderDetails from "./pages/Shop/ShopOrderDetails.jsx";
+import ShopAllRefunds from "./pages/Shop/ShopAllRefunds.jsx";
+import ShopSettingsPage from "./pages/Shop/ShopSettingsPage.jsx";
 function App() {
   const navigate = useNavigate();
   const { loading, isAuthenticated } = useSelector((state) => state.user);
@@ -129,12 +131,35 @@ function App() {
                   <ProfilePage />
                 </ProtectedRoute>
               } />
+              <Route path="/user/track/order/:id" element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <TrackOrderPage />
+                </ProtectedRoute>
+              } />
               <Route path='/checkout' element={
                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                   <CheckoutPage />
                 </ProtectedRoute>
               } />
+              <Route
+                path="/dashboard/refunds"
+                element={
+                  <SellerProtectedRoute 
+                  isSeller={isSeller}>
+                    <ShopAllRefunds />
+                  </SellerProtectedRoute>
+                }
+              />
 
+              <Route
+                path="/settings"
+                element={
+                  <SellerProtectedRoute 
+                  isSeller={isSeller}>
+                    <ShopSettingsPage />
+                  </SellerProtectedRoute>
+                }
+              />
               <Route path="/shop-create" element={<ShopCreate />} />
               <Route path="/order/success" element={<OrderSuccessPage />} />
               <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />

@@ -11,10 +11,12 @@ const TrackOrder = () => {
     const {id} = useParams();
 
     useEffect(() => {
-        dispatch(getAllOrdersOfUser(user._id));
-    }, [dispatch])
+        if(user && user._id) {
+            dispatch(getAllOrdersOfUser(user._id));
+        }
+    }, [dispatch, user._id])
 
-    const { data } = orders && orders.find((item) => item._id === id);
+    const data = orders && orders.find((item) => item._id === id);
   return (
      <div className="w-full h-[80vh] flex justify-center items-center">
       {" "}
@@ -42,7 +44,7 @@ const TrackOrder = () => {
         ) : data?.status === "Processing refund" ? (
           <h1 className="text-[20px]">Your refund is processing!</h1>
         ) : data?.status === "Refund Success" ? (
-          <h1 className="text-[20px]">Your Refund is success!</h1>
+          <h1 className="text-[20px]">Your Refund is successful!</h1>
         ) : null}
       </>
     </div>

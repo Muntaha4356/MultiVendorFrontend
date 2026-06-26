@@ -5,7 +5,6 @@ import AllOrders from '../../components/Shop/AllOrders'
 import { useSelector } from 'react-redux'
 
 const ShopAllOrders = () => {
-  console.log("it reached me cutie hihihihihi")
   const {seller} = useSelector((state) => state.seller)
   return (
     <div>

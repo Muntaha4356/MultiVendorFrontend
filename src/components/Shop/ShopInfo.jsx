@@ -33,10 +33,6 @@ const logoutHandler = async () => {
     window.location.reload();
   }
 
-
-  console.log(data, "shop info")
-
-
   const totalReviewsLength =
     products &&
     products.reduce((acc, product) => acc + product.reviews.length, 0);
@@ -52,9 +48,12 @@ const logoutHandler = async () => {
           <div className='w-full py-5  ' >
       <div className="w-full flex items-center justify-center">
         <img
-          src={`${backend_url}${data?.avatar?.public_id}`}
+          src={
+            data?.avatar?.url ||
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+          }
           className='w-[150px] h-[150px] object-cover rounded-cover'
-          alt="" />
+          alt="Shop avatar" />
       </div>
       <h3 className='text-center py-2 text-[20px] ' >
         {data?.name}

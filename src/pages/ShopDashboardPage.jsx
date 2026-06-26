@@ -2,6 +2,7 @@ import React from 'react'
 import DashboardHeader from '../components/Dashboard/Shop/DashboardHeader'
 import { useSelector } from 'react-redux'
 import DashboardSidebar from '../components/Dashboard/Shop/Layout/DashboardSidebar'
+import DashboardHero from '../components/Shop/DashboardHero'
 
 const ShopDashboardPage = () => {
   const { seller } = useSelector((state) => state.seller)
@@ -12,6 +13,7 @@ const ShopDashboardPage = () => {
         <div className="md:w-[330px] w-[80px]">
           <DashboardSidebar active={1} />
         </div>
+        <DashboardHero/>
       </div>
     </div>
   )
