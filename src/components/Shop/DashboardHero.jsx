@@ -60,7 +60,7 @@ const DashboardHero = () => {
             renderCell : (params) => {
                 return (
                     <>
-                        <Link to={`/shop/order/${params.id}`}>
+                        <Link to={`/order/${params.id}`}>
                             <Button>
                                 <AiOutlineArrowRight size={20} />
                             </Button>
@@ -119,7 +119,7 @@ const DashboardHero = () => {
             </h3>
           </div>
           <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">{orders && orders.length}</h5>
-          <Link to="/dashboard-orders">
+          <Link to="/dashboard/orders">
             <h5 className="pt-4 pl-2 text-[#077f9c]">View Orders</h5>
           </Link>
         </div>
@@ -138,7 +138,7 @@ const DashboardHero = () => {
             </h3>
           </div>
           <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">{products && products.length}</h5>
-          <Link to="/dashboard-products">
+          <Link to="/dashboard/products">
             <h5 className="pt-4 pl-2 text-[#077f9c]">View Products</h5>
           </Link>
         </div>

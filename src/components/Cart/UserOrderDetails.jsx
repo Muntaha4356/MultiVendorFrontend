@@ -14,12 +14,12 @@ import { toast } from "react-toastify";
 
 const UserOrderDetails = () => {
     const { orders } = useSelector((state) => state.orders);
-    const { user } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const [open, setOpen] = useState(true);
     const [comment, setComment] = useState("");
     const [selectedItem, setSelectedItem] = useState(null);
     const [rating, setRating] = useState(1);
+    const { user, isAuthenticated } = useSelector ((state) => state.user);
 
 
     const { id } = useParams();
@@ -33,7 +33,7 @@ const UserOrderDetails = () => {
 
     const reviewHandler = async (e) => {
         await axios
-        
+
             .put(
                 `${server}/product/create-new-review`,
                 {
@@ -41,7 +41,7 @@ const UserOrderDetails = () => {
                     rating,
                     comment,
                     productId: selectedItem?._id,
-                    orderId: id, 
+                    orderId: id,
                 },
                 { withCredentials: true }
             )
@@ -56,6 +56,34 @@ const UserOrderDetails = () => {
                 toast.error(error);
             });
     };
+
+    const handleMessageSubmit = async () => {
+        if (isAuthenticated) {
+          const groupTitle = data._id + user._id;
+          const userId = user._id;
+          const sellerId = data.shop._id;
+          await axios
+            .post(
+              `${server}/conversation/create-new-conversation`,
+              {
+                groupTitle,
+                userId,
+                sellerId,
+              },
+              { withCredentials: true }
+            )
+            .then((res) => {
+                console.log(res, "res")
+                navigate(`/conversation/${res.data.conversation._id}`);
+            })
+            .catch((error) => {
+              toast.error(error.response.data.message);
+            });
+        } else {
+          toast.error("Please login to create a conversation");
+        }
+      };
+
 
     const refundHandler = async () => {
         await axios.put(`${server}/order/order-refund/${id}`, {
@@ -238,9 +266,18 @@ const UserOrderDetails = () => {
                 </div>
             </div>
             <br />
-            <Link to="/">
+            {/* <Link to="/">
                 <div className={`${styles.button} text-white`}>Send Message</div>
-            </Link>
+            </Link> */}
+
+            <div
+                className={`${styles.button} bg-[#6443d1] mt-4 rounded !h-11 `}
+                onClick={handleMessageSubmit}
+            >
+                <span className="text-white flex items-center">
+                    Send Message <AiOutlineMessage className="ml-1" />
+                </span>
+            </div>
             <br />
             <br />
         </div>

@@ -14,6 +14,7 @@ const ShopInfo = ({ isOwner }) => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const { seller } = useSelector((state) => state.seller);
+  
   useEffect(() => {
     dispatch(getAllProductsShop(id));
     setIsLoading(true);
@@ -71,11 +72,11 @@ const logoutHandler = async () => {
       </div>
       <div className="p-3">
         <h5 className='font-[600] '>Total Products</h5>
-        <h4 className='text-[#000000a6]  '>10</h4>
+        <h4 className='text-[#000000a6]  '> {products?.length || 0} </h4>
       </div>
       <div className="p-3">
         <h5 className='font-[600] '>Shop Rating</h5>
-        <h4 className='text-[#000000a6]  '>4/5</h4>
+        <h4 className='text-[#000000a6]  '> {averageRating.toFixed(1)}/5 </h4>
       </div>
       <div className="p-3">
         <h5 className='font-[600] '>Joined On</h5>

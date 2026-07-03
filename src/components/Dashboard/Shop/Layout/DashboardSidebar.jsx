@@ -62,7 +62,7 @@ const DashboardSidebar = ({ active }) => {
                 </Link>
             </div>
             <div className="w-full flex items-center p-4">
-                <Link to="/dashboard/withdraw-money" className='w-full flex items-center ' >
+                <Link to="/dashboard-withdraw-money" className='w-full flex items-center ' >
                     <CiMoneyBill size={30} color={`${active === 7 ? "crimson" : "#555"}`} />
                     <h5 className={`hidden md:block pl-2 text-[18px] ${active === 7 ? "text-[crimson]" : "text-[#555]"} `}>
                         Withdraw Money
@@ -70,7 +70,7 @@ const DashboardSidebar = ({ active }) => {
                 </Link>
             </div>
             <div className="w-full flex items-center p-4">
-                <Link to="/dashboard/messages" className='w-full flex items-center ' >
+                <Link to="/dashboard-messages" className='w-full flex items-center ' >
                     <BiMessageSquareDetail size={30} color={`${active === 8 ? "crimson" : "#555"}`} />
                     <h5 className={`hidden md:block pl-2 text-[18px] ${active === 8 ? "text-[crimson]" : "text-[#555]"} `}>
                         Shop Inbox

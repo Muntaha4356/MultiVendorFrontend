@@ -30,7 +30,7 @@ const OrderDetails = () => {
         await axios.put(`${server}/order/update-order-status/${id}`, { status }, { withCredentials: true })
             .then((res) => {
                 toast.success("Order status updated successfully!");
-                navigate("/dashboard-orders");
+                navigate("/dashboard/orders");
             })
             .catch((error) => {
                 toast.error(error.response.data.message);

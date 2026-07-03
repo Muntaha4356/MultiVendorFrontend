@@ -51,6 +51,9 @@ import ShopAllOrders from "./pages/Shop/ShopAllOrders.jsx";
 import ShopOrderDetails from "./pages/Shop/ShopOrderDetails.jsx";
 import ShopAllRefunds from "./pages/Shop/ShopAllRefunds.jsx";
 import ShopSettingsPage from "./pages/Shop/ShopSettingsPage.jsx";
+import ShopWithdrawMoneyPage from "./pages/Shop/ShopWithdrawMoneyPage.jsx";
+import ShopInboxMessages from "./pages/Shop/ShopInboxPage.jsx";
+import ShopInboxPage from "./pages/Shop/ShopInboxPage.jsx";
 function App() {
   const navigate = useNavigate();
   const { loading, isAuthenticated } = useSelector((state) => state.user);
@@ -85,8 +88,8 @@ function App() {
       <>
 
         <Toaster />
-        <div className="dark:bg-gradient-to-b from-[#242124] to-[#000000]">
-          <div className="flex h-screen w-screen">
+        <div className="dark:bg-gradient-to-b from-[#242124] to-[#000000] overflow-x-hidden">
+          <div className="flex w-full min-h-screen overflow-x-hidden">
             <Routes>
               <Route
                 path="/payment"
@@ -160,6 +163,27 @@ function App() {
                   </SellerProtectedRoute>
                 }
               />
+
+              <Route
+                path="/dashboard-withdraw-money"
+                element={
+                  <SellerProtectedRoute 
+                  isSeller={isSeller}>
+                    <ShopWithdrawMoneyPage />
+                  </SellerProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/dashboard-messages"
+                element={
+                  <SellerProtectedRoute 
+                  isSeller={isSeller}>
+                    <ShopInboxPage />
+                  </SellerProtectedRoute>
+                }
+              />
+
               <Route path="/shop-create" element={<ShopCreate />} />
               <Route path="/order/success" element={<OrderSuccessPage />} />
               <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />

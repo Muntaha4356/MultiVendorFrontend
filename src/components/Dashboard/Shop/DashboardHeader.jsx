@@ -44,7 +44,7 @@ const DashboardHeader = ({seller}) => {
               className='mx-5 cursor-pointer'
             />
           </Link>
-          <Link to="/dashboard/messages" className='md:block hidden'>
+          <Link to="/dashboard-messages" className='md:block hidden'>
             <BiMessageSquareDetail
               color='#555'
               size={30}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { RxCross1 } from "react-icons/rx";
 import styles from "../../../styles/styles";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux"
 import { toast } from "react-hot-toast"
 import { useDispatch } from "react-redux";
@@ -11,14 +12,18 @@ import {
   AiOutlineMessage,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
+import axios from "axios";
+import { server } from "../../../server";
 import { addToWishlist, removeFromWishlist } from "../../../redux/actions/wishlist";
 
 const ProductDetailCard = ({ open, setOpen, data }) => {
   const [count, setCount] = useState(1);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [click, setClick] = useState(false);
   const { cart } = useSelector((state) => state.cart);
-  const { wishlist } = useSelector((state) => state.wishlist)
+  const { wishlist } = useSelector((state) => state.wishlist);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
 
   console.log(data);
   const incrementCount = () => {
@@ -29,7 +34,34 @@ const ProductDetailCard = ({ open, setOpen, data }) => {
       setCount(count - 1);
     }
   };
-  const handleMessageSubmit = () => { };
+  
+  const handleMessageSubmit = async () => {
+      if (isAuthenticated) {
+        const groupTitle = data._id + user._id;
+        const userId = user._id;
+        const sellerId = data.shop._id;
+        await axios
+          .post(
+            `${server}/conversation/create-new-conversation`,
+            {
+              groupTitle,
+              userId,
+              sellerId,
+            },
+            { withCredentials: true }
+          )
+          .then((res) => {
+            console.log(res, "res")
+            navigate(`/conversation/${res.data.conversation._id}`);
+          })
+          .catch((error) => {
+            toast.error(error.response.data.message);
+          });
+      } else {
+        toast.error("Please login to create a conversation");
+      }
+    };
+
   const addToCartHandler = (id) => {
     const isItemExists = cart && cart.find((i) => i._id === id);
     if (isItemExists) {

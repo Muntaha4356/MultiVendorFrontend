@@ -18,6 +18,7 @@ import { backend_url } from "../../server";
 import { toast } from "react-hot-toast";
 import { addToCart } from "../../redux/actions/cart";
 import { addToWishlist, removeFromWishlist } from "../../redux/actions/wishlist";
+import axios from "axios";
 
 const ProductDetails = ({ data }) => {
   const [count, setCount] = useState(1);
@@ -108,8 +109,31 @@ const ProductDetails = ({ data }) => {
   }
 
 
-  const handleMessageSubmit = () => {
-    navigate("/inbox?conversation=con4443rfdscrt43cdscdcfr");
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = data._id + user._id;
+      const userId = user._id;
+      const sellerId = data.shop._id;
+      await axios
+        .post(
+          `${server}/conversation/create-new-conversation`,
+          {
+            groupTitle,
+            userId,
+            sellerId,
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          console.log(res, "res")
+          navigate(`/conversation/${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else {
+      toast.error("Please login to create a conversation");
+    }
   };
   return (
     <div className="bg-white">
@@ -229,16 +253,17 @@ const ProductDetails = ({ data }) => {
                         {averageRating}/5 Rating
                       </h5>
                     </div>
-                    <div
+                    
+                  </div>
+                </Link>
+                <div
                       className={`${styles.button} bg-[#6443d1] mt-4 rounded !h-11 `}
                       onClick={handleMessageSubmit}
                     >
                       <span className="text-white flex items-center">
                         Send Message <AiOutlineMessage className="ml-1" />
                       </span>
-                    </div>
-                  </div>
-                </Link>
+                </div>
               </div>
             </div>
           </div>
