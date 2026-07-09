@@ -32,7 +32,6 @@ const AllCoupons = () => {
         axios.get(`${server}/coupon-code/get-coupon/${seller._id}`, { withCredentials: true })
             .then((res) => {
                 setIsLoading(false);
-                console.log(res.data.couponCodes, "couponCodes")
                 setCoupon(res.data.couponCodes);
             }).catch((error) => {
                 setIsLoading(false);
@@ -63,7 +62,7 @@ const AllCoupons = () => {
         }, { withCredentials: true }
         ).then((res) => {
             toast.success(res.data.message);
-            console.log(res.data.message);
+            (res.data.message);
             setOpen(false);
             window.location.reload(); 
         }).catch((error) => {
@@ -108,7 +107,7 @@ const AllCoupons = () => {
 
 
 
-    console.log(products)
+    (products)
     return (
         <div  >
             {

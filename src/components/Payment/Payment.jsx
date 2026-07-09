@@ -23,8 +23,12 @@ const Payment = () => {
   const stripe = useStripe();
   const elements = useElements();
   useEffect(() => {
-    const orderData = JSON.parse(localStorage.getItem("latestOrder"));
-    setOrderData(orderData);
+    try {
+      const storedOrder = JSON.parse(localStorage.getItem("latestOrder") || "null");
+      setOrderData(storedOrder || {});
+    } catch (error) {
+      setOrderData({});
+    }
   }, []);
   // Bill Generator: it tells "paypal" what the order is and how much to charge
   const createOrder = (data, actions) => {
@@ -90,7 +94,7 @@ const Payment = () => {
   };
 
   const paymentData = {
-    amount: Math.round(orderData?.totalPrice * 100), // converting dollars to cents because Stripe expects the amount in the smallest currency unit
+    amount: Math.round((orderData?.totalPrice || 0) * 100), // converting dollars to cents because Stripe expects the amount in the smallest currency unit
   };
 
   const paymentHandler = async (e) => {
@@ -108,7 +112,11 @@ const Payment = () => {
         config
       );
 
-      const client_secret = data.client_secret;
+      const client_secret = data?.client_secret;
+      if (!client_secret) {
+        toast.error("Unable to initialize Stripe payment.");
+        return;
+      }
 
       if (!stripe || !elements) return; // it ensures that the Stripe.js has loaded and the Stripe Elements are available before attempting to process the payment. If either stripe or elements is not available, the function will return early and not attempt to process the payment, preventing potential errors.
       const result = await stripe.confirmCardPayment(client_secret, {
@@ -121,7 +129,7 @@ const Payment = () => {
         toast.error(result.error.message);
       } else {
         if (result.paymentIntent.status === "succeeded") {
-          order.paymnentInfo = {
+          order.paymentInfo = {
             id: result.paymentIntent.id,
             status: result.paymentIntent.status,
             type: "Credit Card",
@@ -140,7 +148,7 @@ const Payment = () => {
         }
       }
     } catch (error) {
-      toast.error(error);
+      toast.error(error?.message || "Payment failed. Please try again.");
     }
   };
 
@@ -354,8 +362,7 @@ const PaymentInfo = ({
                   </div>
                   <PayPalScriptProvider
                     options={{
-                      "client-id":
-                        "Aczac4Ry9_QA1t4c7TKH9UusH3RTe6onyICPoCToHG10kjlNdI-qwobbW9JAHzaRQwFMn2-k660853jn",
+                      "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID || "",
                     }}
                   >
                     <PayPalButtons
@@ -406,7 +413,6 @@ const PaymentInfo = ({
 };
 
 const CartData = ({ orderData }) => {
-  console.log(orderData)
   const shipping = orderData?.shipping?.toFixed(2);
   return (
     <div className="w-full bg-[#fff] rounded-md p-5 pb-8">

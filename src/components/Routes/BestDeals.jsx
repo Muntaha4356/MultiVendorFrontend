@@ -9,11 +9,9 @@ const BestDeals = () => {
   const [data, setData] = useState([]);
   const { allProducts } = useSelector((state) => state.products);
 
-  console.log(allProducts, "product")
   useEffect(() => {
     const firstFive = allProducts ? allProducts.slice(0, 5) : [];
     setData(firstFive);
-    console.log(allProducts, "product")
   }, [allProducts]);
   return (
     <div className={`${styles.section}`}>

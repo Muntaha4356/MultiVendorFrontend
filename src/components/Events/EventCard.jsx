@@ -11,19 +11,15 @@ const EventCard = ({active, data}) => {
   const {cart} = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const addToCartHandler = (data) => {
-    console.log("meow meow meow meow meow ")
      const isItemExists = cart && cart.find((i) => i._id === data._id);
     if (isItemExists) {
-      console.log("item already in cart")
       toast.error("Item already in cart!");
     } else {
       if (data.stock < 1) {
-        console.log("product stock limited")
         toast.error("Product stock limited!");
       } else {
         const cartData = { ...data, qty: 1 };
         dispatch(addToCart(cartData));
-        console.log("success item added")
         toast.success("Item added to cart successfully!");
       }
     }

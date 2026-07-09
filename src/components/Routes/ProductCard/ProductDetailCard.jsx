@@ -25,7 +25,6 @@ const ProductDetailCard = ({ open, setOpen, data }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
   const { user, isAuthenticated } = useSelector((state) => state.user);
 
-  console.log(data);
   const incrementCount = () => {
     setCount(count + 1);
   };
@@ -51,8 +50,8 @@ const ProductDetailCard = ({ open, setOpen, data }) => {
             { withCredentials: true }
           )
           .then((res) => {
-            console.log(res, "res")
-            navigate(`/conversation/${res.data.conversation._id}`);
+            (res, "res")
+            navigate(`/inbox/${res.data.conversation._id}`);
           })
           .catch((error) => {
             toast.error(error.response.data.message);
@@ -65,14 +64,14 @@ const ProductDetailCard = ({ open, setOpen, data }) => {
   const addToCartHandler = (id) => {
     const isItemExists = cart && cart.find((i) => i._id === id);
     if (isItemExists) {
-      console.log("iaitemexist")
+      ("iaitemexist")
       toast.error("Item already in cart!");
     } else {
       if (data.stock < count) {
-        console.log("data.stock < count")
+        ("data.stock < count")
         toast.error("Product stock limited!");
       } else {
-        console.log("crtfaat")
+        ("crtfaat")
         const cartData = { ...data, qty: count };
         dispatch(addToCart (cartData));
         toast.success("Item added to cart successfully!");

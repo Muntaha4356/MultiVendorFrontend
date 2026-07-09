@@ -25,7 +25,6 @@ import CheckoutPage from "./pages/CheckoutPage.jsx";
 import SellerCreatePage from "./pages/SellerCreatePage.jsx";
 import ShopCreate from "./components/Shop/ShopCreate.jsx";
 import SellerActivationPage from "./pages/SellerActivationPage.jsx";
-import { use } from "react";
 import { useNavigate } from "react-router-dom";
 import ShopHomePage from "./pages/ShopHomePage.jsx";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute.jsx";
@@ -54,6 +53,9 @@ import ShopSettingsPage from "./pages/Shop/ShopSettingsPage.jsx";
 import ShopWithdrawMoneyPage from "./pages/Shop/ShopWithdrawMoneyPage.jsx";
 import ShopInboxMessages from "./pages/Shop/ShopInboxPage.jsx";
 import ShopInboxPage from "./pages/Shop/ShopInboxPage.jsx";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary.jsx";
+import UserInbox from "./pages/UserInbox.jsx";
+
 function App() {
   const navigate = useNavigate();
   const { loading, isAuthenticated } = useSelector((state) => state.user);
@@ -97,12 +99,13 @@ function App() {
                   stripeLoading ? (
                     <Loader />
                   ) : stripeApikey ? (
-                    console.log("kikiki", stripeApikey),
-                    <Elements stripe={loadStripe(stripeApikey)}>
-                      <ProtectedRoute isAuthenticated={isAuthenticated}>
-                        <PaymentPage />
-                      </ProtectedRoute>
-                    </Elements>
+                    <ErrorBoundary>
+                      <Elements stripe={loadStripe(stripeApikey)}>
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
+                          <PaymentPage />
+                        </ProtectedRoute>
+                      </Elements>
+                    </ErrorBoundary>
                   ) : (
                     <div>Failed to load payment system. Please try again later.</div>
                   )
@@ -130,25 +133,45 @@ function App() {
               <Route path="/dashboard/create-event" element={<ShopCreateEvent />} />
               <Route path="/product/:id" element={<ProductDetailsPage />} />
               <Route path="/profile" element={
-                <ProtectedRoute isAuthenticated={isAuthenticated}>
-                  <ProfilePage />
-                </ProtectedRoute>
+                <ErrorBoundary>
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                </ErrorBoundary>
               } />
+              <Route
+                path="/inbox"
+                element={
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                    <UserInbox />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/inbox/:id"
+                element={
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                    <UserInbox />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/user/track/order/:id" element={
                 <ProtectedRoute isAuthenticated={isAuthenticated}>
                   <TrackOrderPage />
                 </ProtectedRoute>
               } />
               <Route path='/checkout' element={
-                <ProtectedRoute isAuthenticated={isAuthenticated}>
-                  <CheckoutPage />
-                </ProtectedRoute>
+                <ErrorBoundary>
+                  <ProtectedRoute isAuthenticated={isAuthenticated}>
+                    <CheckoutPage />
+                  </ProtectedRoute>
+                </ErrorBoundary>
               } />
               <Route
                 path="/dashboard/refunds"
                 element={
-                  <SellerProtectedRoute 
-                  isSeller={isSeller}>
+                  <SellerProtectedRoute
+                    isSeller={isSeller}>
                     <ShopAllRefunds />
                   </SellerProtectedRoute>
                 }
@@ -157,8 +180,8 @@ function App() {
               <Route
                 path="/settings"
                 element={
-                  <SellerProtectedRoute 
-                  isSeller={isSeller}>
+                  <SellerProtectedRoute
+                    isSeller={isSeller}>
                     <ShopSettingsPage />
                   </SellerProtectedRoute>
                 }
@@ -167,8 +190,8 @@ function App() {
               <Route
                 path="/dashboard-withdraw-money"
                 element={
-                  <SellerProtectedRoute 
-                  isSeller={isSeller}>
+                  <SellerProtectedRoute
+                    isSeller={isSeller}>
                     <ShopWithdrawMoneyPage />
                   </SellerProtectedRoute>
                 }
@@ -177,8 +200,8 @@ function App() {
               <Route
                 path="/dashboard-messages"
                 element={
-                  <SellerProtectedRoute 
-                  isSeller={isSeller}>
+                  <SellerProtectedRoute
+                    isSeller={isSeller}>
                     <ShopInboxPage />
                   </SellerProtectedRoute>
                 }
@@ -201,14 +224,14 @@ function App() {
                   <ShopAllCoupons />
                 </SellerProtectedRoute>
               } />
-              
+
               <Route
                 path="/dashboard/orders"
-                element= {
+                element={
                   <SellerProtectedRoute isSeller={isSeller}>
-                      <ShopAllOrders />
+                    <ShopAllOrders />
                   </SellerProtectedRoute>
-                    
+
                 }
               />
               {/* <Route path="/loading" element= {<Loader/>}/> */}
@@ -220,7 +243,7 @@ function App() {
               {/* Shop Order detail page */}
               <Route path="/order/:id" element={
                 <SellerProtectedRoute isSeller={isSeller}>
-                  <ShopOrderDetails/>
+                  <ShopOrderDetails />
                 </SellerProtectedRoute>
               } />
 

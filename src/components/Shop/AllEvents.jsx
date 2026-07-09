@@ -74,8 +74,6 @@ const AllEvents = () => {
   });
 
 
-  
-  console.log(events)
   return (
     <div  >
       {

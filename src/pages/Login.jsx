@@ -45,8 +45,7 @@ const Login = () => {
         navigate("/");
       })
       .catch((err) => {
-        console.log(err.response.data.message);
-        toast.error(err.response.data.message);
+        toast.error(err.response?.data?.message || "Registration failed. Please try again.");
       });
   };
   const handleSubmitLogin = async (e) => {
@@ -66,8 +65,7 @@ const Login = () => {
         window.location.reload(true)
       })
       .catch((err) => {
-        // toast.error(err.response.data.message);
-        console.log(err)
+        toast.error(err.response?.data?.message || "Login failed. Please try again.");
       });
 
   }

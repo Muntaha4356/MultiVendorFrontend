@@ -27,14 +27,16 @@ const OrderDetails = () => {
     const data = orders && orders.find((item) => item._id === id);
 
     const orderUpdateHandler = async (e) => {
-        await axios.put(`${server}/order/update-order-status/${id}`, { status }, { withCredentials: true })
-            .then((res) => {
-                toast.success("Order status updated successfully!");
-                navigate("/dashboard/orders");
-            })
-            .catch((error) => {
-                toast.error(error.response.data.message);
-            });
+      await axios.put(`${server}/order/update-order-status/${id}`, { status }, { withCredentials: true })
+        .then((res) => {
+          toast.success("Order status updated successfully!");
+          // refresh seller data so availableBalance updates in UI
+          dispatch(loadSeller());
+          navigate("/dashboard/orders");
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
     }
 
     const refundOrderUpdateHandler = async (e) => {
@@ -48,7 +50,6 @@ const OrderDetails = () => {
             });
     }
 
-    console.log(data);
 
 
     return (

@@ -12,7 +12,7 @@ const ShopCreateProduct = () => {
         <div className=" w-[88px] md:w-[330px] ">
           <DashboardSidebar active={4} />
         </div>
-        <div className="w-full justify-between flex ">
+        <div className="w-full justify-center flex ">
           <CreateProduct />
         </div>
       </div>

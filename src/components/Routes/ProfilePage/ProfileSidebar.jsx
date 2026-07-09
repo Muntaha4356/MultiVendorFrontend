@@ -23,7 +23,7 @@ const ProfileSidebar = ({ active, setActive }) => {
       navigate('/login');
       
     }).catch((error)=>{
-      console.log(error.response.data.message)
+      toast.error(error.response?.data?.message || "Logout failed.");
     })
   };
   const profile_option = [

@@ -13,12 +13,11 @@ const ActivationPage = () => {
           .post(`${server}/user/activation`, {
             activation_token,
           })
-          .then((res) => {
-            console.log(res);
+          .then(() => {
+            // activation succeeded
           })
           .catch((err) => {
             setError(true);
-            console.log(err)
           });
       };
       sendRequest();

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { BsFillBagFill } from "react-icons/bs";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../../styles/styles";
 import { getAllOrdersOfUser } from "../../redux/actions/order";
 import { server } from "../../server";
 import { RxCross1 } from "react-icons/rx";
-import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import { AiFillStar, AiOutlineMessage, AiOutlineStar } from "react-icons/ai";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -23,6 +23,7 @@ const UserOrderDetails = () => {
 
 
     const { id } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(getAllOrdersOfUser(user._id));
@@ -59,9 +60,13 @@ const UserOrderDetails = () => {
 
     const handleMessageSubmit = async () => {
         if (isAuthenticated) {
+          if (!data || !data.cart || data.cart.length === 0) {
+             toast.error("Order details are not loaded yet.");
+             return;
+          }
           const groupTitle = data._id + user._id;
           const userId = user._id;
-          const sellerId = data.shop._id;
+          const sellerId = data.cart[0].shopId;
           await axios
             .post(
               `${server}/conversation/create-new-conversation`,
@@ -73,8 +78,7 @@ const UserOrderDetails = () => {
               { withCredentials: true }
             )
             .then((res) => {
-                console.log(res, "res")
-                navigate(`/conversation/${res.data.conversation._id}`);
+                navigate(`/inbox/${res.data.conversation._id}`);
             })
             .catch((error) => {
               toast.error(error.response.data.message);

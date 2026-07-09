@@ -83,11 +83,9 @@ const Checkout = () => {
             });
 
           if (isCouponValid.length === 0) {
-            console.log("Coupon code is not valid for this shop or selected products");
             toast.error("Coupon code is not valid for this shop or selected products");
             setCouponCode("");
           } else { 
-            console.log("meoeo")
             const eligiblePrice = isCouponValid.reduce(
               (acc, item) => acc + (item.qty * (item.discountPrice || item.price || 0)),
               0
@@ -120,8 +118,6 @@ const Checkout = () => {
   const totalPrice = couponCodeData
     ? (validSubTotal + validShipping - validDiscount).toFixed(2)
     : (validSubTotal + validShipping).toFixed(2);
-
-  console.log("Calculated Discount:", discountPercentenge);
 
   return (
     <div className="w-full flex flex-col items-center py-8">

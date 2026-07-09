@@ -44,7 +44,6 @@ const Header = ({ activeHeading }) => {
       );
 
     setSearchData(filteredProducts);
-    console.log(searchData);
   };
 
   useEffect(() => {
@@ -64,7 +63,7 @@ const Header = ({ activeHeading }) => {
   }, []);
 
   useEffect(() => {
-    console.log("Active changed:", active);
+    // track active header style only
   }, [active]);
   return (
     <>
@@ -98,7 +97,6 @@ const Header = ({ activeHeading }) => {
                   {searchData &&
                     searchData.map((i, index) => {
                       const product_id = i._id;
-                      console.log("iiii", i)
                       return (
                         <Link to={`/product/${product_id}`}>
                           <div className="w-full flex items-start-py-3">

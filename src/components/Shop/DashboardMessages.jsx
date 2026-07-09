@@ -9,7 +9,7 @@ import styles from "../../styles/styles";
 import { TfiGallery } from "react-icons/tfi";
 import socketIO from "socket.io-client";
 import { format } from "timeago.js";
-const ENDPOINT = "http://localhost:4000";
+const ENDPOINT = import.meta.env.SOCKET_ENDPOINT || "http://localhost:4000";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 const DashboardMessages = () => {
@@ -54,7 +54,7 @@ const DashboardMessages = () => {
 
         setConversations(resonse.data.conversations);
       } catch (error) {
-        // console.log(error);
+        // (error);
       }
     };
     getConversation();
@@ -86,7 +86,7 @@ const DashboardMessages = () => {
         );
         setMessages(response.data.messages);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
     getMessage();
@@ -121,11 +121,11 @@ const DashboardMessages = () => {
             updateLastMessage();
           })
           .catch((error) => {
-            console.log(error);
+            console.error(error);
           });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -141,11 +141,10 @@ const DashboardMessages = () => {
         lastMessageId: seller._id,
       })
       .then((res) => {
-        console.log(res.data.conversation);
         setNewMessage("");
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   };
 
@@ -187,7 +186,7 @@ const DashboardMessages = () => {
           updateLastMessageForImage();
         });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -262,7 +261,7 @@ const MessageList = ({
   setActiveStatus,
   isLoading
 }) => {
-  console.log(data);
+  (data);
   const [user, setUser] = useState([]);
   const navigate = useNavigate();
   const handleClick = (id) => {
@@ -279,7 +278,7 @@ const MessageList = ({
         const res = await axios.get(`${server}/user/user-info/${userId}`);
         setUser(res.data.user);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
     getUser();

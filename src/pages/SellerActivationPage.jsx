@@ -15,11 +15,10 @@ const SellerActivationPage = () => {
                         activation_token,
                     })
                     .then((res) => {
-                        console.log(res);
+                        // activation succeeded
                     })
                     .catch((err) => {
                         setError(true);
-                        console.log(err)
                     });
             };
             sendRequest();
