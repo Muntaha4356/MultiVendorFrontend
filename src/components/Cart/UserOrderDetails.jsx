@@ -67,9 +67,9 @@ const UserOrderDetails = () => {
           const groupTitle = data._id + user._id;
           const userId = user._id;
           const sellerId = data.cart[0].shopId;
-          await axios
-            .post(
-              `${server}/conversation/create-new-conversation`,
+                        await axios
+                        .post(
+                                                        `${server}/conversation/create-new-conversation`,
               {
                 groupTitle,
                 userId,

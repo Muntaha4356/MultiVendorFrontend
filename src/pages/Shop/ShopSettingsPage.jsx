@@ -7,13 +7,16 @@ import { useSelector } from 'react-redux'
 const ShopSettingsPage = () => {
     const {seller} = useSelector((state) => state.seller)
   return (
-    <div>
+    <div className='w-full'>
       <DashboardHeader seller={seller} />
       <div className="flex items-start justify-between w-full">
-        <div className="w-[80px] 800px:w-[330px]">
+        <div className=" w-[88px] md:w-[330px] ">
           <DashboardSidebar active={11} />
         </div>
-        <ShopSettings />
+        <div className="w-full justify-center flex ">
+          <ShopSettings />
+        </div>
+        
       </div>
     </div>
   )

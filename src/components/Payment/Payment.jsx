@@ -149,6 +149,7 @@ const Payment = () => {
       }
     } catch (error) {
       toast.error(error?.message || "Payment failed. Please try again.");
+      console.log(error?.message)
     }
   };
 
