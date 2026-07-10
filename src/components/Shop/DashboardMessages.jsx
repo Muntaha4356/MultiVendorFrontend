@@ -9,8 +9,8 @@ import styles from "../../styles/styles";
 import { TfiGallery } from "react-icons/tfi";
 import socketIO from "socket.io-client";
 import { format } from "timeago.js";
-const ENDPOINT = import.meta.env.SOCKET_ENDPOINT || "http://localhost:4000";
-const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
+const ENDPOINT = import.meta.env.VITE_SOCKET_ENDPOINT || "https://multivendor.bonto.run";
+const socketId = socketIO(ENDPOINT);
 
 const DashboardMessages = () => {
   const { seller,isLoading } = useSelector((state) => state.seller);

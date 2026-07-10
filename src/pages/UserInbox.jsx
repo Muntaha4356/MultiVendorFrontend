@@ -11,8 +11,8 @@ import styles from '../styles/styles';
 import { format } from 'timeago.js';
 
 
-const ENDPOINT = import.meta.env.VITE_SOCKET_ENDPOINT || "http://localhost:4000";
-const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
+const ENDPOINT = import.meta.env.VITE_SOCKET_ENDPOINT || "https://multivendor.bonto.run";
+const socketId = socketIO(ENDPOINT);
 
 const UserInbox = () => {
     const { user, loading } = useSelector((state) => state.user);
