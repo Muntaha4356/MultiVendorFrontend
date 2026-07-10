@@ -14,13 +14,15 @@ import { TbAddressBook } from "react-icons/tb";
 import { server } from "../../../server";
 import axios from "axios";
 import {toast} from "react-hot-toast"
+import { clearUserToken } from "../../../utils/axiosConfig";
 const ProfileSidebar = ({ active, setActive }) => {
   const navigate = useNavigate();
   const Logout = () => {
     axios.get(`${server}/user/logout`, {withCredentials: true} ).then((res) => {
+      clearUserToken();
       toast.success(res.data.message);
-      window.location.reload(true);
       navigate('/login');
+      window.location.reload();
       
     }).catch((error)=>{
       toast.error(error.response?.data?.message || "Logout failed.");

@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom'
 import axios from 'axios';
 import { server } from '../server';
+import Store from '../redux/store';
+import { setSellerToken } from '../utils/axiosConfig';
 
 const SellerActivationPage = () => {
     const { activation_token } = useParams();
@@ -13,9 +15,15 @@ const SellerActivationPage = () => {
                 await axios
                     .post(`${server}/shop/activation`, {
                         activation_token,
-                    })
+                    }, { withCredentials: true })
                     .then((res) => {
-                        // activation succeeded
+                        if (res.data.seller) {
+                            setSellerToken(res.data.token);
+                            Store.dispatch({
+                                type: "LoadSellerSuccess",
+                                payload: res.data.seller,
+                            });
+                        }
                     })
                     .catch((err) => {
                         setError(true);

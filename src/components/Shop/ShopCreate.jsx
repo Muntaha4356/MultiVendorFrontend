@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import styles from "../../styles/styles";
 import { server } from "../../server";
+import Store from "../../redux/store";
+import { setSellerToken } from "../../utils/axiosConfig";
 
 const ShopCreate = () => {
   const [state, setState] = useState("login");
@@ -70,9 +72,13 @@ const ShopCreate = () => {
         { withCredentials: true }
       )
       .then((res) => {
+        setSellerToken(res.data.token);
+        Store.dispatch({
+          type: "LoadSellerSuccess",
+          payload: res.data.seller,
+        });
         toast.success("Login Success!");
-        navigate("/dashboard")
-        window.location.reload(true)
+        navigate("/dashboard");
       })
       .catch((err) => {
         toast.error(err.response?.data?.message || "Login failed. Please try again.");

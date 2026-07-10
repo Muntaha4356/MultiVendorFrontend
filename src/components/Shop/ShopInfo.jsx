@@ -6,6 +6,7 @@ import { backend_url, server } from '../../server';
 import { getAllProductsShop } from '../../redux/actions/product';
 import styles from '../../styles/styles';
 import axios from 'axios';
+import { clearSellerToken } from '../../utils/axiosConfig';
 
 const ShopInfo = ({ isOwner }) => {
   const [data, setData] = useState({});
@@ -28,7 +29,8 @@ const ShopInfo = ({ isOwner }) => {
     
   }, [id])
 const logoutHandler = async () => {
-    axios.get(`${server}/shop/logout`, { withCredentials: true })
+    await axios.get(`${server}/shop/logout`, { withCredentials: true });
+    clearSellerToken();
     window.location.reload();
   }
 

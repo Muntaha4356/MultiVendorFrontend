@@ -7,6 +7,8 @@ import { server } from "../server";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import Store from "../redux/store";
+import { setUserToken } from "../utils/axiosConfig";
 const Login = () => {
   const [state, setState] = useState("login");
   const [name, setName] = useState("");
@@ -60,9 +62,13 @@ const Login = () => {
         { withCredentials: true }
       )
       .then((res) => {
+        setUserToken(res.data.token);
+        Store.dispatch({
+          type: "LoadUserSuccess",
+          payload: res.data.user,
+        });
         toast.success("Login Success!");
         navigate("/");
-        window.location.reload(true)
       })
       .catch((err) => {
         toast.error(err.response?.data?.message || "Login failed. Please try again.");

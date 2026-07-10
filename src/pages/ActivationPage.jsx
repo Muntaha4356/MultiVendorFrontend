@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom'
 import axios from 'axios';
 import { server } from '../server';
+import Store from '../redux/store';
+import { setUserToken } from '../utils/axiosConfig';
 const ActivationPage = () => {
     const {activation_token} = useParams();
     const [error, setError] = useState();
@@ -12,9 +14,15 @@ const ActivationPage = () => {
         await axios
           .post(`${server}/user/activation`, {
             activation_token,
-          })
-          .then(() => {
-            // activation succeeded
+          }, { withCredentials: true })
+          .then((res) => {
+            if (res.data.user) {
+              setUserToken(res.data.token);
+              Store.dispatch({
+                type: "LoadUserSuccess",
+                payload: res.data.user,
+              });
+            }
           })
           .catch((err) => {
             setError(true);
