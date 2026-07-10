@@ -50,7 +50,7 @@ const EventCard = ({active, data}) => {
                     {data.discountPrice}$ 
                 </h5>
             </div>
-            <span className="pr-3 font-[400] text-[17px] text-[#44a55e]">120 sold</span>
+            <span className="pr-3 font-[400] text-[17px] text-[#44a55e]">{data.sold_out ?? 0} sold</span>
         </div>
         <CountDown  />
         <br />

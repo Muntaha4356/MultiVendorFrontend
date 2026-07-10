@@ -18,7 +18,8 @@ export const createevent = (newForm) => async (dispatch) => {
     }
 
     catch (error) {
-        dispatch({ type: "eventCreateFail", payload: error.response.data.message });
+        const message = error.response?.data?.message || error.message || "Something went wrong";
+        dispatch({ type: "eventCreateFail", payload: message });
     }
 };
 
@@ -48,10 +49,12 @@ export const deleteevent = (id) => async (dispatch) => {
         });
     }
     catch (error) {
+        const message = error.response?.data?.message || error.message || "Something went wrong";
         dispatch({ 
             type: "deleteeventFailed", 
-            payload: error.response.data.message 
+            payload: message 
         });
+        throw new Error(message);
     }
 };
 

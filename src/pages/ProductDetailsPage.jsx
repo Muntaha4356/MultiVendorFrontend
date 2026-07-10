@@ -3,40 +3,43 @@ import Header from '../components/Layouts/Header'
 import Footer from '../components/Routes/Footer/Footer'
 import ProductDetails from '../components/ProductDetails/ProductDetails'
 import { useParams, useSearchParams } from 'react-router-dom'
-import { productData } from '../static/data'
 import SuggestedProducts from '../components/ProductDetails/SuggestedProducts'
-import { useDispatch, useSelector } from 'react-redux'
-import { getAllProductsShop } from '../redux/actions/product'
+import { useSelector } from 'react-redux'
+import { matchesProductRoute } from '../utils/slugify'
+import Loader from '../components/Layout/Loader'
 const ProductDetailsPage = () => {
   const {id} = useParams();
   const [data, setData] = useState();
-  const {allProducts} = useSelector((state) => state.products);
-  const { allEvents } = useSelector((state) => state.events);
+  const {allProducts, isLoading: productsLoading} = useSelector((state) => state.products);
+  const { allEvents, isLoading: eventsLoading } = useSelector((state) => state.events);
   const [searchParams] = useSearchParams();
   const eventData = searchParams.get("isEvent");
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (eventData !== null) {
-      const data = allEvents && allEvents.find((i) => i._id === id);
-      setData(data);
-    } else {
-      const data = allProducts && allProducts.find((i) => i._id === id);
-      setData(data);
+      const event = allEvents && allEvents.find((item) => matchesProductRoute(item, id));
+      setData(event);
+      return;
     }
-  }, [allProducts, allEvents]);
+
+    const product = allProducts && allProducts.find((item) => matchesProductRoute(item, id));
+    setData(product);
+  }, [allProducts, allEvents, id, eventData]);
+  const isLoading = productsLoading || eventsLoading;
+
   return (
     <div>
       <Header/>
-      <ProductDetails data={data} />
-      {/* <RelatedProducts/> */}
-      {
-          !eventData && (
-            <>
-            {data && <SuggestedProducts data={data} />}
-            </>
-          )
-        }
+      {isLoading && !data ? (
+        <Loader />
+      ) : !data ? (
+        <div className="w-full py-20 text-center text-gray-600">Product not found.</div>
+      ) : (
+        <>
+          <ProductDetails data={data} />
+          {!eventData && data && <SuggestedProducts data={data} />}
+        </>
+      )}
       <Footer/>
     </div>
   )

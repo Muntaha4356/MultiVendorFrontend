@@ -80,16 +80,15 @@ const AllCoupons = () => {
         { field: "actions", headerName: "Actions", minWidth: 150, flex: 0.6, },
         {
             field: "Delete", headerName: "", minWidth: 100, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
-                const d = params.row.name;
-                const product_name = d.replace(/\s+/g, '-');
                 return (
-                    <Link to={`/product/${product_name}`}>
-                        <Button
-                            onClick={() => handleDelete(params.id)}
-                        >
-                            <AiOutlineDelete size={20} />
-                        </Button>
-                    </Link>
+                    <Button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(params.id);
+                        }}
+                    >
+                        <AiOutlineDelete size={20} />
+                    </Button>
                 );
             },
         },

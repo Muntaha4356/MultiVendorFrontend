@@ -112,7 +112,6 @@ const Header = ({ activeHeading }) => {
                             <h1
                               onClick={() => {
                                 navigate(`/product/${product_id}`);
-                                window.location.reload(true);
                               }}
                             >
                               {i.name}
@@ -288,16 +287,15 @@ const Header = ({ activeHeading }) => {
                 {searchData && searchData.length !== 0 ? (
                   <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
                     {searchData &&
-                      searchData.map((i, index) => {
-                        const d = i.name;
-                        const product_name = d.replace(/\s+/g, "-");
+                      searchData.map((i) => {
+                        const product_id = i._id;
                         return (
-                          <Link to={`/product/${product_name}`}>
+                          <Link key={product_id} to={`/product/${product_id}`}>
                             <div className="w-full flex items-start-py-3">
                               <img
                                 src={
-                                  i.image_Url && i.image_Url.length > 0
-                                    ? i.image_Url[0].url
+                                  i.images && i.images.length > 0
+                                    ? i.images[0]
                                     : "https://res.cloudinary.com/dflbje6qn/image/upload/b_rgb:C2C9D6/c_pad,w_140,h_55/v1756942450/download_18_vprvfq.jpg"
                                 }
                                 alt=""
@@ -305,8 +303,7 @@ const Header = ({ activeHeading }) => {
                               />
                               <h1
                                 onClick={() => {
-                                  navigate(`/product/${product_name}`);
-                                  window.location.reload(true);
+                                  navigate(`/product/${product_id}`);
                                 }}
                               >
                                 {i.name}

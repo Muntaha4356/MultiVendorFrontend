@@ -8,6 +8,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import { Button } from '@mui/material';
 import Loader from '../Layout/Loader';
+import { toast } from 'react-hot-toast';
 const AllEvents = () => {
   const { events, isLoading } = useSelector((state) => state.events);
   const dispatch = useDispatch();
@@ -19,9 +20,14 @@ const AllEvents = () => {
   }, [dispatch, seller]);
 
 
-  const handleDelete = (id) => {   
-    dispatch(deleteevent(id));
-    window.location.reload();
+  const handleDelete = async (id) => {
+    try {
+      await dispatch(deleteevent(id));
+      await dispatch(getAlleventsShop(seller._id));
+      toast.success("Event deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete event");
+    }
   }
 
 
@@ -34,10 +40,8 @@ const AllEvents = () => {
     { field: "actions", headerName: "Actions", minWidth: 150, flex: 0.6, },
     {
       field: "Preview", headerName: "", minWidth: 100, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
-        const d = params.row.name;
-        const event_name = d.replace(/\s+/g, '-');
         return (
-          <Link to={`/event/${event_name}`}>
+          <Link to={`/product/${params.id}?isEvent=true`}>
             <Button>
               <AiOutlineEye size={20} />
             </Button>
@@ -47,16 +51,15 @@ const AllEvents = () => {
     },
     {
       field: "Delete", headerName: "", minWidth: 100, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
-        const d = params.row.name;
-        const event_name = d.replace(/\s+/g, '-');
         return (
-          <Link to={`/event/${event_name}`}>
-            <Button
-            onClick={() => handleDelete(params.id)}
-            >
-              <AiOutlineDelete size={20}  />
-            </Button>
-          </Link>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(params.id);
+            }}
+          >
+            <AiOutlineDelete size={20} />
+          </Button>
         );
       },
     },
@@ -69,7 +72,7 @@ const AllEvents = () => {
       name: item.name,
       price: `US$ ${item.discountPrice}`,
       stock: item.stock,
-      sold: 10,
+      sold: item.sold_out ?? 0,
     });
   });
 

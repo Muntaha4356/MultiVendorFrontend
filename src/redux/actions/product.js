@@ -51,11 +51,9 @@ export const deleteProduct = (id) => async (dispatch) => {
         });
     }
     catch (error) {
-            const message = error.response?.data?.message || error.message || "Something went wrong";
-        dispatch({ 
-            type: "deleteProductFailed", 
-            payload: message 
-        });
+        const message = error.response?.data?.message || error.message || "Something went wrong";
+        dispatch({ type: "deleteProductFailed", payload: message });
+        throw new Error(message);
     }
 };
 

@@ -8,6 +8,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import { Button } from '@mui/material';
 import Loader from '../Layout/Loader';
+import { toast } from 'react-hot-toast';
 const AllProducts = () => {
   const { products, isLoading } = useSelector((state) => state.products);
   const dispatch = useDispatch();
@@ -17,12 +18,17 @@ const AllProducts = () => {
     if (seller?._id) {
       dispatch(getAllProductsShop(seller._id));
     }
-  }, [dispatch]);
+  }, [dispatch, seller?._id]);
 
 
-  const handleDelete = (id) => {
-    dispatch(deleteProduct(id));
-    window.location.reload();
+  const handleDelete = async (id) => {
+    try {
+      await dispatch(deleteProduct(id));
+      await dispatch(getAllProductsShop(seller._id));
+      toast.success("Product deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete product");
+    }
   }
 
 
@@ -35,10 +41,8 @@ const AllProducts = () => {
     { field: "actions", headerName: "Actions", minWidth: 150, flex: 0.6, },
     {
       field: "Preview", headerName: "", minWidth: 100, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
-        const d = params.row.name;
-        const product_name = d.replace(/\s+/g, '-');
         return (
-          <Link to={`/product/${product_name}`}>
+          <Link to={`/product/${params.id}`}>
             <Button>
               <AiOutlineEye size={20} />
             </Button>
@@ -48,16 +52,15 @@ const AllProducts = () => {
     },
     {
       field: "Delete", headerName: "", minWidth: 100, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
-        const d = params.row.name;
-        const product_name = d.replace(/\s+/g, '-');
         return (
-          <Link to={`/product/${product_name}`}>
-            <Button
-              onClick={() => handleDelete(params.id)}
-            >
-              <AiOutlineDelete size={20} />
-            </Button>
-          </Link>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(params.id);
+            }}
+          >
+            <AiOutlineDelete size={20} />
+          </Button>
         );
       },
     },
@@ -70,7 +73,7 @@ const AllProducts = () => {
       name: item.name,
       price: `US$ ${item.discountPrice}`,
       stock: item.stock,
-      sold: 10,
+      sold: item.sold_out ?? 0,
     });
   });
 

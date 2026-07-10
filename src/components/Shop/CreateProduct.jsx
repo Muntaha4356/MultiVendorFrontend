@@ -35,6 +35,22 @@ const CreateProduct = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (!images.length) {
+            toast.error("Please upload at least one product image");
+            return;
+        }
+
+        if (category === "Choose a Category" || !category) {
+            toast.error("Please select a category");
+            return;
+        }
+
+        if (Number(discountPrice) < 0 || Number(stock) < 0 || Number(originalPrice) < 0) {
+            toast.error("Prices and stock cannot be negative");
+            return;
+        }
+
         const newForm = new FormData();
         images.forEach((image) => {
             newForm.append("images", image);
@@ -128,6 +144,7 @@ const CreateProduct = () => {
                         Original Price
                     </label>
                     <input type="number"
+                        min="0"
                         className='mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 '
                         value={originalPrice}
                         name='price'
@@ -140,6 +157,8 @@ const CreateProduct = () => {
                         Discount Price <span className='text-red-500'>*</span>
                     </label>
                     <input type="number"
+                        min="0"
+                        required
                         className='mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 '
                         value={discountPrice}
                         placeholder='Enter your Product Discount Price...'
@@ -151,6 +170,8 @@ const CreateProduct = () => {
                         Product Stock <span className='text-red-500'>*</span>
                     </label>
                     <input type="number"
+                        min="0"
+                        required
                         className='mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 '
                         value={stock}
                         placeholder='Enter your Product Stock...'
