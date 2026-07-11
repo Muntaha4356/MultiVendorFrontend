@@ -18,6 +18,7 @@ import { toast } from "react-hot-toast";
 import { addToCart } from "../../redux/actions/cart";
 import { addToWishlist, removeFromWishlist } from "../../redux/actions/wishlist";
 import { matchesProductRoute } from "../../utils/slugify";
+import axios from "axios";
 
 const ProductDetails = ({ data }) => {
   const [count, setCount] = useState(1);
@@ -329,8 +330,7 @@ const ProductDetailInfo = ({ data, products, totalReviewsLength, averageRating }
       ) : null}
       {active === 2 ? (
         <div className="w-full min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll">
-          {data &&
-            data.reviews.map((item, index) => (
+          {data?.reviews?.map((item, index) => (
               <div className="w-full flex my-2">
                 <img
                   src={`${item.user.avatar?.url}`}
@@ -348,7 +348,7 @@ const ProductDetailInfo = ({ data, products, totalReviewsLength, averageRating }
             ))}
 
           <div className="w-full flex justify-center">
-            {data && data.reviews.length === 0 && (
+            {data && (!data.reviews || data.reviews.length === 0) && (
               <h5>No Reviews for this product!</h5>
             )}
           </div>

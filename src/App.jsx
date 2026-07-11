@@ -132,6 +132,10 @@ function App() {
               <Route path="/dashboard/events" element={<ShopAllEvents />} />
               <Route path="/dashboard/create-event" element={<ShopCreateEvent />} />
               <Route path="/product/:id" element={<ProductDetailsPage />} />
+              <Route
+                path="/event/:id"
+                element={<ProductDetailsPage forceEventView />}
+              />
               <Route path="/profile" element={
                 <ErrorBoundary>
                   <ProtectedRoute isAuthenticated={isAuthenticated}>

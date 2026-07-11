@@ -41,7 +41,7 @@ const AllEvents = () => {
     {
       field: "Preview", headerName: "", minWidth: 100, flex: 0.8, type: "number", sortable: false, renderCell: (params) => {
         return (
-          <Link to={`/product/${params.id}?isEvent=true`}>
+          <Link to={`/event/${params.id}`}>
             <Button>
               <AiOutlineEye size={20} />
             </Button>

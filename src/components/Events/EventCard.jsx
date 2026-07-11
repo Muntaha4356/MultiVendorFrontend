@@ -10,6 +10,11 @@ import { addToCart } from "../../redux/actions/cart";
 const EventCard = ({active, data}) => {
   const {cart} = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+
+  if (!data) {
+    return null;
+  }
+
   const addToCartHandler = (data) => {
      const isItemExists = cart && cart.find((i) => i._id === data._id);
     if (isItemExists) {
@@ -52,10 +57,10 @@ const EventCard = ({active, data}) => {
             </div>
             <span className="pr-3 font-[400] text-[17px] text-[#44a55e]">{data.sold_out ?? 0} sold</span>
         </div>
-        <CountDown  />
+        <CountDown finishDate={data.Finish_Date} />
         <br />
         <div className="flex items-center">
-          <Link to={`/product/${data._id}?isEvent=true`}>
+          <Link to={`/event/${data._id}`}>
             <div className={`${styles.button} text-[#fff]`}>See Details</div>
           </Link>
           <div className={`${styles.button} text-[#fff] ml-5`} onClick={() => addToCartHandler(data)}>Add to cart</div>

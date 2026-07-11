@@ -2,45 +2,70 @@ import React, { useEffect, useState } from 'react'
 import Header from '../components/Layouts/Header'
 import Footer from '../components/Routes/Footer/Footer'
 import ProductDetails from '../components/ProductDetails/ProductDetails'
-import { useParams, useSearchParams } from 'react-router-dom'
+import EventDetails from '../components/Events/EventDetails'
+import { useParams, useSearchParams, useLocation } from 'react-router-dom'
 import SuggestedProducts from '../components/ProductDetails/SuggestedProducts'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { matchesProductRoute } from '../utils/slugify'
 import Loader from '../components/Layout/Loader'
-const ProductDetailsPage = () => {
-  const {id} = useParams();
+import { getAllEvents } from '../redux/actions/event'
+import { getAllProducts } from '../redux/actions/product'
+
+const ProductDetailsPage = ({ forceEventView = false }) => {
+  const { id } = useParams();
   const [data, setData] = useState();
-  const {allProducts, isLoading: productsLoading} = useSelector((state) => state.products);
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const { allProducts, isLoading: productsLoading } = useSelector((state) => state.products);
   const { allEvents, isLoading: eventsLoading } = useSelector((state) => state.events);
   const [searchParams] = useSearchParams();
-  const eventData = searchParams.get("isEvent");
+  const isEventView =
+    forceEventView ||
+    searchParams.get("isEvent") !== null ||
+    location.pathname.startsWith("/event/");
 
   useEffect(() => {
-    if (eventData !== null) {
-      const event = allEvents && allEvents.find((item) => matchesProductRoute(item, id));
+    if (!allProducts?.length) {
+      dispatch(getAllProducts());
+    }
+    if (!allEvents?.length) {
+      dispatch(getAllEvents());
+    }
+  }, [dispatch, allProducts?.length, allEvents?.length]);
+
+  useEffect(() => {
+    if (isEventView) {
+      const event =
+        allEvents && allEvents.find((item) => matchesProductRoute(item, id));
       setData(event);
       return;
     }
 
-    const product = allProducts && allProducts.find((item) => matchesProductRoute(item, id));
+    const product =
+      allProducts && allProducts.find((item) => matchesProductRoute(item, id));
     setData(product);
-  }, [allProducts, allEvents, id, eventData]);
-  const isLoading = productsLoading || eventsLoading;
+  }, [allProducts, allEvents, id, isEventView]);
+
+  const isLoading = isEventView ? eventsLoading : productsLoading;
 
   return (
-    <div>
-      <Header/>
+    <div className="bg-white min-h-screen">
+      <Header />
       {isLoading && !data ? (
         <Loader />
       ) : !data ? (
-        <div className="w-full py-20 text-center text-gray-600">Product not found.</div>
+        <div className="w-full py-20 text-center text-gray-600">
+          {isEventView ? "Event not found." : "Product not found."}
+        </div>
+      ) : isEventView ? (
+        <EventDetails data={data} />
       ) : (
         <>
           <ProductDetails data={data} />
-          {!eventData && data && <SuggestedProducts data={data} />}
+          <SuggestedProducts data={data} />
         </>
       )}
-      <Footer/>
+      <Footer />
     </div>
   )
 }

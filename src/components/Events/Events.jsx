@@ -16,10 +16,12 @@ const Events = () => {
                             <h1>Popular Events</h1>
                         </div>
 
-                        <div className="w-full grid">
+                        <div className="w-full grid gap-8">
                             {
                                 allEvents.length !== 0 && (
-                                    <EventCard data={allEvents && allEvents[0]} />
+                                    allEvents.map((event) => (
+                                        <EventCard key={event._id} data={event} />
+                                    ))
                                 )
                             }
                             <h4>{
