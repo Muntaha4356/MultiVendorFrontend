@@ -15,11 +15,11 @@ import { toast } from "react-toastify";
 const UserOrderDetails = () => {
     const { orders } = useSelector((state) => state.orders);
     const dispatch = useDispatch();
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const [comment, setComment] = useState("");
     const [selectedItem, setSelectedItem] = useState(null);
     const [rating, setRating] = useState(1);
-    const { user, isAuthenticated } = useSelector ((state) => state.user);
+    const { user, isAuthenticated } = useSelector((state) => state.user);
 
 
     const { id } = useParams();
@@ -30,6 +30,9 @@ const UserOrderDetails = () => {
     }, [dispatch, user._id]);
 
     const data = orders && orders.find((item) => item._id === id);
+
+    console.log("status:", JSON.stringify(data?.status));
+    console.log("CART:", data?.cart?.map(i => ({ name: i.name, isReviewed: i.isReviewed })))
 
 
     const reviewHandler = async (e) => {
@@ -60,33 +63,34 @@ const UserOrderDetails = () => {
 
     const handleMessageSubmit = async () => {
         if (isAuthenticated) {
-          if (!data || !data.cart || data.cart.length === 0) {
-             toast.error("Order details are not loaded yet.");
-             return;
-          }
-          const groupTitle = data._id + user._id;
-          const userId = user._id;
-          const sellerId = data.cart[0].shopId;
-                        await axios
-                        .post(
-                                                        `${server}/conversation/create-new-conversation`,
-              {
-                groupTitle,
-                userId,
-                sellerId,
-              },
-              { withCredentials: true }
-            )
-            .then((res) => {
-                navigate(`/inbox/${res.data.conversation._id}`);
-            })
-            .catch((error) => {
-              toast.error(error.response.data.message);
-            });
+            if (!data || !data.cart || data.cart.length === 0) {
+                toast.error("Order details are not loaded yet.");
+                return;
+            }
+            
+            const groupTitle = data._id + user._id;
+            const userId = user._id;
+            const sellerId = data.cart[0].shopId;
+            await axios
+                .post(
+                    `${server}/conversation/create-new-conversation`,
+                    {
+                        groupTitle,
+                        userId,
+                        sellerId,
+                    },
+                    { withCredentials: true }
+                )
+                .then((res) => {
+                    navigate(`/inbox/${res.data.conversation._id}`);
+                })
+                .catch((error) => {
+                    toast.error(error.response.data.message);
+                });
         } else {
-          toast.error("Please login to create a conversation");
+            toast.error("Please login to create a conversation");
         }
-      };
+    };
 
 
     const refundHandler = async () => {
@@ -121,30 +125,35 @@ const UserOrderDetails = () => {
             {/* order items */}
             <br />
             <br />
-            {data &&
+            {data && 
                 data?.cart.map((item, index) => {
                     return (
-                        <div className="w-full flex items-start mb-5">
-                            <img
-                                src={`${item.images[0]?.url}`}
-                                alt=""
-                                className="w-[80x] h-[80px]"
-                            />
-                            <div className="w-full">
-                                <h5 className="pl-3 text-[20px]">{item.name}</h5>
-                                <h5 className="pl-3 text-[20px] text-[#00000091]">
-                                    US${item.discountPrice} x {item.qty}
-                                </h5>
+
+                            <div className="w-full flex items-start mb-5">
+                                <img
+                                    src={`${item.images?.[0]?.url}`}
+                                    alt=""
+                                    className="w-[80x] h-[80px]"
+                                />
+                                <div className="w-full">
+                                    <h5 className="pl-3 text-[20px]">{item.name}</h5>
+                                    <h5 className="pl-3 text-[20px] text-[#00000091]">
+                                        US${item.discountPrice} x {item.qty}
+                                    </h5>
+                                </div>
+                                {item.isReviewed !== true && data?.status === "Delivered" ? <div
+                                    className={`${styles.button} text-[#fff]`}
+                                    onClick={() => {
+                                        setOpen(true);
+                                        setSelectedItem(item);
+                                    }}
+                                >
+                                    Write a review
+                                </div> : (
+                                    null
+                                )}
                             </div>
-                            {!item.isReviewed && data?.status === "Delivered" ? <div
-                                className={`${styles.button} text-[#fff]`}
-                                onClick={() => setOpen(true) || setSelectedItem(item)}
-                            >
-                                Write a review
-                            </div> : (
-                                null
-                            )}
-                        </div>
+                        
                     )
                 })}
 
@@ -165,7 +174,7 @@ const UserOrderDetails = () => {
                         <br />
                         <div className="w-full flex">
                             <img
-                                src={`${selectedItem?.images[0]?.url}`}
+                                src={`${selectedItem?.images?.[0]?.url}`}
                                 alt=""
                                 className="w-[80px] h-[80px]"
                             />
@@ -225,8 +234,8 @@ const UserOrderDetails = () => {
                             ></textarea>
                         </div>
                         <div
-                            className={`${styles.button} text-white text-[20px] ml-3`}
-                            onClick={rating > 1 ? reviewHandler : null}
+                            className={`${styles.button} text-white text-[20px] ml-3 ${!rating ? "opacity-50 cursor-not-allowed" : ""}`}
+                            onClick={rating ? reviewHandler : null}
                         >
                             Submit
                         </div>
