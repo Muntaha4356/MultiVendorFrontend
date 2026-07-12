@@ -11,12 +11,12 @@ const ProfilePage = () => {
     <div>
       <Header />
       <div className={`${styles.section} flex bg-[#f5f5f5] py-10 `}>
-        <div className="w-[50px] lg:w-[335px] transition-all duration-300 sticky 800px:mt-0 md:mt-[18%] ">
+        <div className="w-[50px] lg:w-[335px] transition-all duration-300 sticky top-[100px] mt-0">
           <ProfileSidebar active={active} setActive={setActive} />
         </div>
-          <ProfileContent active={active} setActive={setActive}/>
+        <ProfileContent active={active} setActive={setActive} />
       </div>
-      <Profile/>
+      <Profile />
     </div>
   )
 }
