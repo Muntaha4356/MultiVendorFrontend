@@ -198,7 +198,8 @@ const Header = ({ activeHeading }) => {
                     {isAuthenticated ? (
                       <Link to="/profile">
                         <img
-                          src={`${backend_url}${user.avatar.public_id}`}
+                          src={user.avatar?.url ||
+    "https://res.cloudinary.com/dflbje6qn/image/upload/v1757592455/Default_Placeholder_Profile_Icon_Stock_Vector_-_Illustration_of_character_people__90197997_ikuxad.jpg"}
                           className="w-[40px] h-[40px] rounded-full "
                           alt=""
                         />

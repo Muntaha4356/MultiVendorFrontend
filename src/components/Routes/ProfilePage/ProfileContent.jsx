@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { backend_url } from "../../../server";
 import { server } from "../../../server";
 import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineArrowRight, AiOutlineCamera, AiOutlineDelete } from "react-icons/ai";
@@ -43,6 +42,7 @@ const ProfileContent = ({ active, setActive }) => {
     reader.onload = () => {
       if (reader.readyState === 2) {
         setAvatar(reader.result);
+        console.log(server, "this is server")
         axios
           .put(
             `${server}/user/update-avatar`,
@@ -54,9 +54,10 @@ const ProfileContent = ({ active, setActive }) => {
           .then((response) => {
             dispatch(loadUser());
             toast.success("avatar updated successfully!");
+            console.log(user,"user here it is")
           })
           .catch((error) => {
-            toast.error(error);
+            toast.error(error?.response?.data?.message || "Failed to update avatar");
           });
       }
     };
@@ -74,9 +75,10 @@ const ProfileContent = ({ active, setActive }) => {
           <div className="flex justify-center w-full ">
             <div className="relative">
               <img
-                src={`${backend_url}${user.avatar?.public_id ||
+                src={
+                  user?.avatar?.url ||
                   "https://res.cloudinary.com/dflbje6qn/image/upload/v1757592455/Default_Placeholder_Profile_Icon_Stock_Vector_-_Illustration_of_character_people__90197997_ikuxad.jpg"
-                  }`}
+                }
                 className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132] "
                 alt=""
               />
@@ -213,14 +215,14 @@ export default ProfileContent;
 
 const AllOrders = () => {
   const { orders } = useSelector((state) => state.orders);
-  const {user} = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   useEffect(() => {
     if (user && user._id) {
       dispatch(getAllOrdersOfUser(user._id));
     }
   }, [dispatch, user?._id])
-  
+
   // Define columns
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -505,21 +507,21 @@ const ChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
 
-  const passwordChangeHandler = async(e) => {
+  const passwordChangeHandler = async (e) => {
     e.preventDefault();
-    await axios.put(`${server}/user/update-user-password`, 
-      {oldPassword, newPassword, confirmPassword}, 
-      {withCredentials: true}
+    await axios.put(`${server}/user/update-user-password`,
+      { oldPassword, newPassword, confirmPassword },
+      { withCredentials: true }
     )
-    .then((res) => {
-      toast.success(res.data.success);
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-    })
-    .catch((error) => {
-      toast.error(error.response.data.message);
-    })
+      .then((res) => {
+        toast.success(res.data.success);
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      })
   };
 
   return (
@@ -529,13 +531,13 @@ const ChangePassword = () => {
       </h1>
       <div className="w-full">
         <form aria-required className="flex flex-col items-center"
-        onSubmit={passwordChangeHandler} 
+          onSubmit={passwordChangeHandler}
         >
           <div className="w-[100%] 800px:w-[50%] mt-5">
             <label className="block pb-2"> Enter your old password</label>
             <input type="password"
-            className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
-            required value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
+              className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
+              required value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
           </div>
           <div className=" w-[100%] 800px:w-[50%] mt-2">
             <label className="block pb-2">Enter your new password</label>

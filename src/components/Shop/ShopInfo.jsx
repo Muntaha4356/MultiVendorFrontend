@@ -2,7 +2,7 @@ import React, { useEffect,useState } from 'react'
 import { Link, useParams } from 'react-router-dom';
 import Loader from '../Layout/Loader';
 import { useDispatch,useSelector } from 'react-redux';
-import { backend_url, server } from '../../server';
+import { server } from '../../server';
 import { getAllProductsShop } from '../../redux/actions/product';
 import styles from '../../styles/styles';
 import axios from 'axios';

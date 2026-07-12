@@ -35,9 +35,6 @@ export const updateUserInformation = (name, email, phoneNumber, password) => asy
             email, password, phoneNumber, name
         }, {
             withCredentials: true,
-            headers: {
-                "Access-Control-Allow-Credentials" : true,
-            },
         }
        );
        dispatch({

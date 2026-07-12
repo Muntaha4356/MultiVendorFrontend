@@ -4,7 +4,6 @@ import { BiMessageSquareDetail } from 'react-icons/bi'
 import { FiPackage, FiShoppingBag } from 'react-icons/fi'
 import { MdOutlineLocalOffer } from 'react-icons/md'
 import { Link } from 'react-router-dom'
-import { backend_url } from '../../../server'
 
 const DashboardHeader = ({seller}) => {
   
