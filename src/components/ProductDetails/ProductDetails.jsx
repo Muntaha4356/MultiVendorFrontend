@@ -333,16 +333,16 @@ const ProductDetailInfo = ({ data, products, totalReviewsLength, averageRating }
           {data?.reviews?.map((item, index) => (
               <div className="w-full flex my-2">
                 <img
-                  src={`${item.user.avatar?.url}`}
+                  src={`${item?.user?.avatar?.url}`}
                   alt=""
                   className="w-[50px] h-[50px] rounded-full"
                 />
                 <div className="pl-2 ">
                   <div className="w-full flex items-center">
-                    <h1 className="font-[500] mr-3">{item.user.name}</h1>
+                    <h1 className="font-[500] mr-3">{item?.user?.name}</h1>
                     <Ratings rating={data?.ratings} />
                   </div>
-                  <p>{item.comment}</p>
+                  <p>{item?.comment}</p>
                 </div>
               </div>
             ))}
@@ -390,7 +390,7 @@ const ProductDetailInfo = ({ data, products, totalReviewsLength, averageRating }
               <h5 className="font-[300] pt-3">
                 TotaL Reviews <span className="font-[500]"> {totalReviewsLength} </span>
               </h5>
-              <Link to={"/"}>
+              <Link to={`${`/shop/preview/${data?.shop?._id}`}`} >
                 <div className={`${styles.button} !rounded-[4px] !h-[39px] mt-3`}>
                   <h4 className="text-white">Visit Shop</h4>
                 </div>

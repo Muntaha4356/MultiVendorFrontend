@@ -11,16 +11,23 @@ import { RxCross1 } from "react-icons/rx";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { Country, State } from "country-state-city"
-import { updateUserInformation, deleteUserAddress, loadUser, updateUserAddress } from "../../../redux/actions/user";
+import { updateUserInformation, deleteUserAddress, updateUserAddress } from "../../../redux/actions/user";
 import { getAllOrdersOfUser } from "../../../redux/actions/order";
 const ProfileContent = ({ active, setActive }) => {
   const { user, error, successMessage } = useSelector((state) => state.user);
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
-  const [phoneNum, setPhoneNum] = useState(user && user.phoneNumber);
+  const [phoneNum, setPhoneNum] = useState(user?.phoneNumber || "");
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(null)
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setName(user?.name || "");
+    setEmail(user?.email || "");
+    setPhoneNum(user?.phoneNumber || "");
+  }, [user]);
+
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -37,32 +44,54 @@ const ProfileContent = ({ active, setActive }) => {
 
   };
   const handleImage = async (e) => {
-    const reader = new FileReader();
+    const file = e.target.files?.[0];
 
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please choose a valid image file.");
+      return;
+    }
+
+    const maxAvatarSize = 4 * 1024 * 1024;
+    if (file.size > maxAvatarSize) {
+      toast.error("Please choose an image smaller than 4MB.");
+      return;
+    }
+
+    const reader = new FileReader();
     reader.onload = () => {
       if (reader.readyState === 2) {
         setAvatar(reader.result);
-        console.log(server, "this is server")
-        axios
-          .put(
-            `${server}/user/update-avatar`,
-            { avatar: reader.result },
-            {
-              withCredentials: true,
-            }
-          )
-          .then((response) => {
-            dispatch(loadUser());
-            toast.success("avatar updated successfully!");
-            console.log(user,"user here it is")
-          })
-          .catch((error) => {
-            toast.error(error?.response?.data?.message || "Failed to update avatar");
-          });
       }
     };
+    reader.readAsDataURL(file);
 
-    reader.readAsDataURL(e.target.files[0]);
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    try {
+      const { data } = await axios.put(
+        `${server}/user/update-avatar`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      dispatch({
+        type: "LoadUserSuccess",
+        payload: data.user,
+      });
+      setAvatar(null);
+      toast.success("Avatar updated successfully!");
+    } catch (error) {
+      setAvatar(null);
+      toast.error(error?.response?.data?.message || "Failed to update avatar");
+    }
   };
   if (!user) {
     return <div className="w-full text-center p-4">Loading profile...</div>;
@@ -76,6 +105,7 @@ const ProfileContent = ({ active, setActive }) => {
             <div className="relative">
               <img
                 src={
+                  avatar ||
                   user?.avatar?.url ||
                   "https://res.cloudinary.com/dflbje6qn/image/upload/v1757592455/Default_Placeholder_Profile_Icon_Stock_Vector_-_Illustration_of_character_people__90197997_ikuxad.jpg"
                 }
@@ -85,6 +115,7 @@ const ProfileContent = ({ active, setActive }) => {
               <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute button-[5px] right-[5px] bottom-[5px] ">
                 <input type="file" id="image"
                   className="hidden"
+                  accept="image/*"
                   onChange={handleImage} />
                 <label htmlFor="image">
                   <AiOutlineCamera />

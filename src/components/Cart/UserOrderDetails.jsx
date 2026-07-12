@@ -9,6 +9,7 @@ import { RxCross1 } from "react-icons/rx";
 import { AiFillStar, AiOutlineMessage, AiOutlineStar } from "react-icons/ai";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { getAllProducts } from "../../redux/actions/product";
 
 
 
@@ -52,6 +53,7 @@ const UserOrderDetails = () => {
             .then((res) => {
                 toast.success(res.data.message);
                 dispatch(getAllOrdersOfUser(user._id));
+                dispatch(getAllProducts());
                 setComment("");
                 setRating(null);
                 setOpen(false);
