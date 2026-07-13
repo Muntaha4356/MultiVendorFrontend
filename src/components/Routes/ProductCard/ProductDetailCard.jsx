@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { RxCross1 } from "react-icons/rx";
-import styles from "../../../styles/styles";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux"
 import { toast } from "react-hot-toast"
@@ -8,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/actions/cart";
 import {
   AiFillHeart,
+  AiFillStar,
   AiOutlineHeart,
   AiOutlineMessage,
   AiOutlineShoppingCart,
@@ -64,7 +64,7 @@ const ProductDetailCard = ({ open, setOpen, data }) => {
   const addToCartHandler = (id) => {
     const isItemExists = cart && cart.find((i) => i._id === id);
     if (isItemExists) {
-      ("iaitemexist")
+
       toast.error("Item already in cart!");
     } else {
       if (data.stock < count) {
@@ -82,6 +82,7 @@ const ProductDetailCard = ({ open, setOpen, data }) => {
   };
 
   useEffect(() => {
+    console.log(data, "data")
     if (wishlist && wishlist.find((i) => i._id === data._id)) {
       setClick(true)
     } else {
@@ -100,115 +101,140 @@ const ProductDetailCard = ({ open, setOpen, data }) => {
     dispatch(addToWishlist(data))
   }
   return (
-    <div className="bg-[#fff]">
-      {data ? (
-        <div className="fixed w-full h-screen top-0 left-0 bg-[#00000030] z-50 flex items-center justify-center">
-          <div className="w-[90%] 800px:w-[60%] h-[90vh] overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-sm relative p-4">
-            <RxCross1
-              size={30}
-              className="absolute right-3 top-3 z-50"
+     <div className="bg-[#fff]">
+       {data ? (
+        <div className="fixed inset-0 w-full h-screen bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-white rounded-2xl shadow-2xl relative">
+            <button
               onClick={() => setOpen(false)}
-            />
-            <div className="block w-full 800px:flex">
-              <div className="w-full 800px:w-[50%]">
-                <img src={data.image_Url && data.image_Url[0]?.url} alt="" />
-                {/* Shop url */}
-                <div className="flex">
+              aria-label="Close quick view"
+              className="absolute right-4 top-4 z-50 bg-white/90 hover:bg-gray-100 rounded-full p-2 shadow-sm transition-colors"
+            >
+              <RxCross1 size={20} />
+            </button>
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              {/* Left: image + shop trust info */}
+              <div className="bg-gray-50 p-6 md:p-8 flex flex-col rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
+                <div className="rounded-xl overflow-hidden bg-white border border-gray-100 aspect-square flex items-center justify-center">
                   <img
-                    src={data.shop?.shop_avatar?.url}
-                    className="w-[50px] h-[50px] rounded-full mr-2"
+                    src={data?.images?.[0] || ""}
+                    alt={data.name}
+                    className="w-full h-full object-contain p-4"
                   />
-                  <div className="">
-                    <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
-                    <h5 className="pb-3 text-[15px] ">
-                      ({data.shop.ratings}) Ratings
-                    </h5>
+                </div>
+
+                <div className="flex items-center gap-3 mt-5">
+                  <img
+                    src={data.shop?.avatar?.url}
+                    alt={data.shop?.name}
+                    className="w-11 h-11 rounded-full object-cover border border-gray-200"
+                  />
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-[15px]">
+                      {data.shop.name}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      <AiFillStar/> {data.shop.ratings} Ratings
+                    </p>
                   </div>
                 </div>
-                <div
-                  className={`${styles.button} bg-[#000] mt-4 rounded-[4px] h-11 `}
+
+                <button
                   onClick={handleMessageSubmit}
+                  className="mt-4 w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-black text-white text-sm font-medium py-2.5 rounded-lg transition-colors"
                 >
-                  <span className="text-[#fff] flex items-center ">
-                    Send Message <AiOutlineMessage className="ml-1 " />
-                  </span>
-                </div>
-                <h5 className="text-[16px] text-[red] mt-5">
+                  Send Message <AiOutlineMessage size={16} />
+                </button>
+
+                <p
+                  className={`text-sm font-medium mt-4 ${
+                    data.stock < 1 ? "text-red-500" : "text-gray-500"
+                 }`}
+                >
                   {data.stock < 1
                     ? "Sold out"
                     : `${data.sold_out ?? 0} sold · ${data.stock} in stock`}
-                </h5>
+                </p>
               </div>
-              <div className="w-full 800px:w-[50%] pt-5 pl-[5px] pr-[5px] ">
-                <h1 className={`${styles.productTitle} text-[20px]  `}>
+
+              {/* Right: product info + purchase actions */}
+              <div className="p-6 md:p-8 flex flex-col">
+                <h1 className="text-xl md:text-2xl font-bold text-gray-900 leading-snug">
                   {data.name}
                 </h1>
-                <p>{data.description}</p>
-                <div className="flex pt-3">
-                  <h4 className={`${styles.productDiscountPrice}`}>
-                    {data.discount_price}$
-                  </h4>
-                  <h3 className={`${styles.price}`}>
-                    {data.price ? data.price + "$" : null}
-                  </h3>
-                </div>
-              </div>
-              <div className="flex items-center mt-12 justify-between pr-3">
-                <div className="">
-                  <button
-                    className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
-                    onClick={decrementCount}
-                  >
-                    -
-                  </button>
-                  <span className="bg-gray-200 text-gray-800 font-medium px-4 py-[11px]">
-                    {count}
+                <p className="text-gray-500 text-sm mt-3 leading-relaxed">
+                  {data.description}
+                </p>
+
+                <div className="flex items-baseline gap-2 mt-5">
+                  <span className="text-2xl font-bold text-teal-600">
+                    {data.discountPrice}$
                   </span>
-                  <button
-                    className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
-                    onClick={incrementCount}
-                  >
-                    +
-                  </button>
+                  {data.originalPrice ? (
+                    <span className="text-gray-400 line-through text-sm">
+                      {data.originalPrice}$
+                    </span>
+                  ) : null}
                 </div>
 
-                {/* Heart icon */}
-                <div>
-                  {click ? (
-                    <AiFillHeart
-                      size={30}
-                      className="cursor-pointer"
-                      onClick={() => {
-                        removeFromWishlistHandler(data)
-                      }}
-                      color={click ? "red" : "#333"}
-                      title="Remove from wishlist"
-                    />
-                  ) : (
-                    <AiOutlineHeart
-                      size={30}
-                      className="cursor-pointer"
-                      onClick={() => addToWishListHandler(data)}
-                      title="Add to wishlist"
-                    />
-                  )}
+                {/* Spacer pushes purchase controls to bottom of column */}
+                <div className="flex-1" />
+
+                <div className="mt-8 pt-5 border-t border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center rounded-lg overflow-hidden border border-gray-200">
+                      <button
+                        onClick={decrementCount}
+                        aria-label="Decrease quantity"
+                        className="px-3.5 py-2 text-gray-600 hover:bg-gray-50 transition-colors"
+                      >
+                        −
+                      </button>
+                      <span className="px-4 py-2 font-medium text-gray-800 border-x border-gray-200">
+                        {count}
+                      </span>
+                      <button
+                        onClick={incrementCount}
+                        aria-label="Increase quantity"
+                        className="px-3.5 py-2 text-gray-600 hover:bg-gray-50 transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    {click ? (
+                      <AiFillHeart
+                        size={26}
+                        className="cursor-pointer"
+                        onClick={() => removeFromWishlistHandler(data)}
+                        color="red"
+                        title="Remove from wishlist"
+                      />
+                    ) : (
+                      <AiOutlineHeart
+                        size={26}
+                        className="cursor-pointer text-gray-700 hover:text-red-500 transition-colors"
+                        onClick={() => addToWishListHandler(data)}
+                        title="Add to wishlist"
+                      />
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => addToCartHandler(data._id)}
+                    disabled={data.stock < 1}
+                    className="mt-4 w-full flex items-center justify-center gap-2 bg-gradient-to-r from-teal-400 to-teal-500 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg shadow-sm hover:opacity-90 transition-opacity"
+                  >
+                    Add to cart <AiOutlineShoppingCart size={18} />
+                  </button>
                 </div>
               </div>
-              <div
-                className={`${styles.button} mt-6 rounded-[4px] h-11 flex items-center`}
-                onClick={() => addToCartHandler(data._id)}
-              >
-                <span className="text-[#fff] flex items-center">
-                  Add to cart <AiOutlineShoppingCart className="ml-1" />
-                </span>
-              </div>
             </div>
-            {/* right side of card */}
           </div>
         </div>
-      ) : null}
-    </div>
-  );
+       ) : null}
+     </div>
+   );
 };
 
 export default ProductDetailCard;
