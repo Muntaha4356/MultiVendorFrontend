@@ -112,7 +112,7 @@ const ProductDetails = ({ data }) => {
 
   const handleMessageSubmit = async () => {
     if (isAuthenticated) {
-      const groupTitle = productData._id + user._id;
+      const groupTitle = productData.shop._id + user._id;
       const userId = user._id;
       const sellerId = productData.shop._id;
       await axios

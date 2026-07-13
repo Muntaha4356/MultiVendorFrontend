@@ -70,7 +70,7 @@ const UserOrderDetails = () => {
                 return;
             }
             
-            const groupTitle = data._id + user._id;
+            const groupTitle = data.shop._id + user._id;
             const userId = user._id;
             const sellerId = data.cart[0].shopId;
             await axios

@@ -26,6 +26,7 @@ const DashboardMessages = () => {
   const [open, setOpen] = useState(false);
   const scrollRef = useRef(null);
 
+
   useEffect(() => {
     socketId.on("getMessage", (data) => {
       setArrivalMessage({
@@ -64,7 +65,7 @@ const DashboardMessages = () => {
     if (seller) {
       const sellerId = seller?._id;
       socketId.emit("addUser", sellerId);
-      socketId.on("getUsers", (data) => {
+      socketId.on("getUser", (data) => {
         setOnlineUsers(data);
       });
     }
@@ -106,11 +107,7 @@ const DashboardMessages = () => {
       (member) => member.id !== seller._id
     );
 
-    socketId.emit("sendMessage", {
-      senderId: seller._id,
-      receiverId,
-      text: newMessage,
-    });
+    
 
     try {
       if (newMessage !== "") {
@@ -127,6 +124,13 @@ const DashboardMessages = () => {
     } catch (error) {
       console.error(error);
     }
+
+    socketId.emit("sendMessage", {
+      senderId: seller._id,
+      receiverId,
+      text: newMessage,
+    });
+
   };
 
   const updateLastMessage = async () => {
