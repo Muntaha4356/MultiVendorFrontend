@@ -10,6 +10,7 @@ import {
   AiOutlineShoppingCart,
   AiOutlineStar,
 } from "react-icons/ai";
+import { BsStarHalf } from "react-icons/bs";
 import ProductDetailCard from "./ProductDetailCard";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
@@ -24,12 +25,23 @@ const ProductCard = ({ data }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
   const product_id = data._id;
 
+  const totalReviewsLength =
+    data && data.reviews && data.reviews.length;
+
+  const totalRatings =
+    data &&
+    data.reviews &&
+    data.reviews.reduce((acc, item) => acc + item.rating, 0);
+
+  const avg = totalRatings / totalReviewsLength || 0;
+  const averageRating = avg.toFixed(2);
+
   useEffect(() => {
     if (wishlist && wishlist.find((i) => i._id === data._id)) {
       setClick(true)
     } else {
       setClick(false)
-    } 
+    }
   }, [wishlist])
 
   const addToCartHandler = (id) => {
@@ -78,31 +90,38 @@ const ProductCard = ({ data }) => {
             {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
           </h4>
           <div className="flex">
-            <AiFillStar
-              size={20}
-              className="mr-2 cursor-pointer"
-              color="#F6BA00"
-            />
-            <AiFillStar
-              size={20}
-              className="mr-2 cursor-pointer"
-              color="#F6BA00"
-            />
-            <AiFillStar
-              size={20}
-              className="mr-2 cursor-pointer"
-              color="#F6BA00"
-            />
-            <AiFillStar
-              size={20}
-              className="mr-2 cursor-pointer"
-              color="#F6BA00"
-            />
-            <AiOutlineStar
-              size={20}
-              className="mr-2 cursor-pointer"
-              color="#F6BA00"
-            />
+
+            {Array.from({ length: 5 }, (_, index) => {
+              if (averageRating >= index + 1) {
+                return (
+                  <AiFillStar
+                    key={index}
+                    size={20}
+                    className="mr-2 cursor-pointer"
+                    color="#F6BA00"
+                  />
+                );
+              } else if (averageRating > index) {
+                return (
+                  <BsStarHalf
+                    key={index}
+                    size={20}
+                    className="mr-2 cursor-pointer"
+                    color="#F6BA00"
+                  />
+                );
+              }
+              else {
+                return (
+                  <AiOutlineStar
+                    key={index}
+                    size={20}
+                    className="mr-2 cursor-pointer"
+                    color="#F6BA00"
+                  />
+                );
+              }
+            })}
           </div>
           <div className="py-2 flex items-center justify-between">
             <div className="flex">
