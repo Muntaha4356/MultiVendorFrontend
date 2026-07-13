@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { RxCross1 } from "react-icons/rx";
 import { toast } from "react-hot-toast";
 import axios from "axios";
-import { Country, State } from "country-state-city"
+import { City, Country, State } from "country-state-city"
 import { updateUserInformation, deleteUserAddress, updateUserAddress } from "../../../redux/actions/user";
 import { getAllOrdersOfUser } from "../../../redux/actions/order";
 const ProfileContent = ({ active, setActive }) => {
@@ -697,21 +697,27 @@ const Address = () => {
                           ))}
                       </select>
                     </div>
+
+
                     <div className="w-full pb-2">
-                      <label htmlFor="" className="block pb-2">Choose your City</label>
-                      <select name="" id="" value={city}
-                        onChange={(e) => setCity(e.target.value)} className="w-[95%] border h-[40px] rounded-[5px]" >
+                      <label htmlFor="city-select" className="block pb-2">Choose your City</label>
+                      <select
+                        id="city-select"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        className="w-[95%] border h-[40px] rounded-[5px]"
+                      >
                         <option value="" className="block border pb-2">
                           choose your city
                         </option>
 
                         {
-                          State &&
-                          State.getStatesOfCountry(country).map((item) => (
+                          City &&
+                          City.getCitiesOfCountry(country).map((item) => (
                             <option
                               className="block pb-2"
-                              key={item.isoCode}
-                              value={item.isoCode}
+                              key={item.name} // Note: Cities usually don't have isoCodes, using item.name or a combined key is safer
+                              value={item.name}
                             >
                               {item.name}
                             </option>
@@ -719,6 +725,7 @@ const Address = () => {
                         }
                       </select>
                     </div>
+
                     <div className="w-full pb-2">
                       <label className="block pb-2">Address 1</label>
                       <input
