@@ -9,9 +9,11 @@ const DashboardHeader = ({seller}) => {
   
   return (
     <div className='w-full h-[80px] bg-white shadow sticky top-0 left-0 z-30 flex items-center justify-between px-4'>
-      <div className="">
-        <Link to="/dashboard">
-          <img src="https://shopo.quomodothemes.website/assets/images/logo.svg" alt="" />
+      <div className="flex items-center h-16 w-auto">
+        <Link to="/dashboard" className="h-full flex items-center">
+          <img src="https://res.cloudinary.com/dflbje6qn/image/upload/v1784024464/anime_stickers_for_printing_4_Pegatinas__Anime_hojw08.jpg" alt="" 
+          className="max-h-full w-auto object-contain"
+          />
         </Link>
       </div>
       <div className="flex items-center">
