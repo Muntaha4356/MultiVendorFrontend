@@ -27,8 +27,8 @@ const AllCoupons = () => {
     const [coupon, setCoupon] = useState([]);
     const { products } = useSelector((state) => state.products);
 
-    useEffect(() => { 
-        setIsLoading(true);  
+    useEffect(() => {
+        setIsLoading(true);
         axios.get(`${server}/coupon-code/get-coupon/${seller._id}`, { withCredentials: true })
             .then((res) => {
                 setIsLoading(false);
@@ -41,7 +41,7 @@ const AllCoupons = () => {
         if (seller?._id) {
             dispatch(getAllProductsShop(seller._id));
         }
-    }, [dispatch]);
+    }, [dispatch, seller._id]);
 
 
     const handleDelete = (id) => {
@@ -51,25 +51,33 @@ const AllCoupons = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await axios.post(`${server}/coupon-code/create-Coupon-code`, {
-            name,
-            value,
-            minAmount,
-            maxAmount,
-            selectedProducts: selectedProduct,
-            shop: seller,
 
-        }, { withCredentials: true }
-        ).then((res) => {
-            toast.success(res.data.message);
-            (res.data.message);
+        try {
+            const res = await axios.post(
+                `${server}/coupon-code/create-Coupon-code`,
+                {
+                    name,
+                    value,
+                    minAmount,
+                    maxAmount,
+                    selectedProducts: selectedProduct,
+                    shop: seller,
+                },
+                { withCredentials: true }
+            );
+            toast.success(res.data.message || "Coupon created successfully!");
             setOpen(false);
-            window.location.reload(); 
-        }).catch((error) => {
-            toast.error(error.response.data.message);
-        })
-        window.location.reload();
-    }
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+
+        } catch (error) {
+            const errorMsg = error.response?.data?.message || "Something went wrong!";
+            toast.error(errorMsg);
+        }
+    };
+
 
 
 

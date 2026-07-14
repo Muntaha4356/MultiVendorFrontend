@@ -69,8 +69,9 @@ const Payment = () => {
       }
     });
   };
+  //local not paypal
   const paypalPaymentHandler = async (paymentInfo) => { // this function will send the paymentInfo to our backend to create the order in our database
-    const config = { // this is the config for the axios request, we need to set the content type to application/json because we are sending a json object to the backend
+    const config = { // this is the config for the axios request, we need to set the content type to application/json because we are sending a json object
       headers: {
         "Content-Type": "application/json",
       },
